@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Landing{% endblock %}
+
+{% block content %}
+<div class="content">
+	<!-- <div class="terminal-pointer"></div> -->
+	<span class="material-symbols-outlined">navigate_next</span>
+	<input type="text" class="form-field" id="search-bar" placeholder="Name, Location, Year">
+	<ul class="buttons">
+		<li><a href="{% url "most_wanted:database" %}">Database</a></li>
+		<li><a href="{% url "most_wanted:analytics" %}">Analytics</a></li>
+		<li><a href="{% url "most_wanted:map" %}">Choropleth</a></li>
+		<li><a href="{% url "most_wanted:about" %}">About</a></li>
+	</ul>
+
+	<div class="nav">
+	</div>
+	<!-- <div class="buttons"> -->
+	<!-- 	<button type="button" class="form-field landing-btn">Database</button> -->
+	<!-- 	<button type="button" class="form-field landing-btn">Analytics</button> -->
+	<!-- 	<button type="button"class="form-field landing-btn">Map</button> -->
+	<!-- </div> -->
+</div>
+{% endblock %}
