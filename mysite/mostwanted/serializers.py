@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from .models import CriminalRecords
+from .models import FugitiveRecords
 
-class CriminalRecordsSerializer(serializers.ModelSerializer):
+class FugitiveRecordsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CriminalRecords
+        model = FugitivelRecords
         fields = ('firstname', 'lastname')

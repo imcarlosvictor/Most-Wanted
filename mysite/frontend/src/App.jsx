@@ -7,29 +7,26 @@ function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-        HELOOOOOOOOOOOOOOO
-      </p>
-    </>
+
+
+
+    <div className="content">
+      {/* <!-- <div class="terminal-pointer"></div> --> */}
+      <span className="material-symbols-outlined">navigate_next</span>
+      <input type="text" className="form-field" id="search-bar" placeholder="Name, Location, Year"/>
+      <ul className="buttons">
+        <li><a href="#">Database</a></li>
+        <li><a href="#">Analytics</a></li>
+        <li><a href="#">Choropleth</a></li>
+        <li><a href="#">About</a></li>
+      </ul>
+    </div>
+
+
+
+
+
+
   )
 }
 
