@@ -3,12 +3,13 @@ import json
 import pandas as pd
 
 ################################### FBI ###################################
-fbi_fugitive_records = []
+fbi_fugitive_profiles = []
 page_number = 1
-def get_fbi_fugitive_records(page: int):
+def fbi_fugitive_profile_extract(page: int):
     """
     Implements api pagination.
     """
+    #TODO: Add a for loop instead of recursive funtion calls
     response = requests.get('https://api.fbi.gov/wanted/v1/list', params={'page': page})
     fbi_data = response.json()
     fbi_data_pd = pd.DataFrame.from_dict(fbi_data)
@@ -20,7 +21,7 @@ def get_fbi_fugitive_records(page: int):
     for i in range(0, len(fbi_data_pd['items'])):
         record = {
             'name': fbi_data_pd['items'][i]['title'],
-            'aliases': fbi_data_pd['items'][i]['aliases'],
+            'alias': fbi_data_pd['items'][i]['aliases'],
             'sex': fbi_data_pd['items'][i]['sex'],
             'age_min': fbi_data_pd['items'][i]['age_min'],
             'age_max': fbi_data_pd['items'][i]['age_max'],
@@ -46,16 +47,16 @@ def get_fbi_fugitive_records(page: int):
             'images': '',
             'link': fbi_data_pd['items'][i]['url'],
         }
-        fbi_fugitive_records.append(record)
+        fbi_fugitive_profiles.append(record)
 
     page_number += 1
     print('#########################')
     # print(page_number)
-    print(len(fbi_fugitive_records))
-    get_fbi_fugitive_records(page_number)
+    print(len(fbi_fugitive_profiles))
+    fbi_fugitive_profiles_extract(page_number)
 
-# get_fbi_fugitive_records(page_number)
-# print(fbi_fugitive_records[999])
+# fbi_fugitive_profiles(page_number)
+# print(fbi_fugitive_profiles[999])
 
 
 ################################### INTERPOL ###################################
@@ -77,12 +78,12 @@ def interpol_fugitive_id(url_list):
             url = additional_info_url + id.replace('/','-')
             url_list.append(url)
 
-interpol_fugitive_id(fugitive_id_urls)
-print(fugitive_id_urls)
-print(len(fugitive_id_urls))
+# interpol_fugitive_id(fugitive_id_urls)
+# print(fugitive_id_urls)
+# print(len(fugitive_id_urls))
 
-interpol_fugitive_records = []
-def get_interpol_records(individual_red_notice_url):
+interpol_fugitive_profiles = []
+def interpol_profiles_extract(individual_red_notice_url):
     # Iterate over URLs of fugitive recrods
     for url in individual_red_notice_url:
         # print(len(interpol_fugitive_records))
@@ -101,7 +102,7 @@ def get_interpol_records(individual_red_notice_url):
         record = {
             'firstname': [ interpol_data['forename'] if interpol_data['forename'] else '' ],
             'lastname': [ interpol_data['name'] if interpol_data['name'] else '' ],
-            'aliases': '',
+            'alias': '',
             'sex': [ interpol_data['sex_id'] if interpol_data['sex_id'] else '' ],
             'age_min': '',
             'age_max': '',
@@ -129,7 +130,7 @@ def get_interpol_records(individual_red_notice_url):
             'thumbnail': '',
             'link': link,
         }
-        interpol_fugitive_records.append(record)
+        interpol_fugitive_profiles.append(record)
 
 # interpol_fugitive_id(page_num, fugitive_id_urls)
 # get_interpol_records(fugitive_id_urls)
