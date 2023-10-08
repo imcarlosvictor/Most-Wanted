@@ -133,17 +133,13 @@ class Scraper:
             html = HTMLParser(response.text)
 
             # Extracts
-            name = html.css('h1.page-header')
-            # sex = personal_details[1].text()
+            name = html.css_first('h1.page-header')
             status = html.css_first('p.mrgn-bttm-md').text()
             charges = html.css('ul.list-group li.list-group-item') # list of charges
             last_modified = html.css_first('time')
             description = html.css('div.col-md-9 p') # description[1].text()
             image = html.css_first('img.img-responsive').attributes['src']
             image = 'https://www.rcmp-grc.gc.ca' + image
-            link = URL
-
-
             # To determine the value associtaed with the extracted list, split the sentence into
             # words, and assign the value to the right variable with the first word
             personal_details = html.css('ul.list-unstyled li')
@@ -165,7 +161,7 @@ class Scraper:
                 elif details[0] == 'Born:':
                     date_of_birth = details[1:]
                 elif details[0] == 'Place':
-                    place_of_birth = details[1:]
+                    place_of_birth = details[3:]
                 elif details[0] == 'Eye':
                     eyes = details[2:]
                 elif details[0] == 'Hair':
@@ -178,51 +174,46 @@ class Scraper:
                     pass
                 elif details[0] == 'Scars:':
                     scars = details[1:]
-                else:
-                    print('nononono')
-
-            # restructure sentence
+            # Restructure sentence
             profile_values = [alias, sex, date_of_birth, place_of_birth, eyes, hair, height, weight, scars]
             profile_values = [ ''.join(text) if index == 6 or index == 7 else ' '.join(text) for index, text in enumerate(profile_values) ]
 
-            for i in profile_values:
-                print(i)
+            profile = {
+                'name': name.text(),
+                'alias': profile_values[0],
+                'sex': profile_values[1],
+                'age_min': '',
+                'age_max': '',
+                'height_min': '',
+                'height_max': '',
+                'height': profile_values[6],
+                'weight': profile_values[7],
+                'eyes': profile_values[4],
+                'hair': profile_values[5],
+                'distinguishing_marks': '',
+                'nationality': '',
+                'age_range': '',
+                'date_of_birth': profile_values[2],
+                'place_of_birth': profile_values[3],
+                'charges': charges,
+                'wanted_by': 'RCMP',
+                'publication': '',
+                'last_modified': last_modified.text(),
+                'status': status,
+                'reward': '',
+                'details': description[1].text(),
+                'caution': '',
+                'warning': '',
+                'images': image,
+                'link': URL,
+            }
+            profile_extracts.append(profile)
 
-            # for i, val in enumerate(personal_details):
-            #     print(f'{i} | {val.text()}')
-            # profile = {
-            #     'name': html.css('h1.page-header').text(),
-            #     'alias': '',
-            #     'sex': personal_details[1].text(),
-            #     'age_min': '',
-            #     'age_max': '',
-            #     'height_min': '',
-            #     'height_max': '',
-            #     'height': '',
-            #     'weight': '',
-            #     'eyes': '',
-            #     'hair': '',
-            #     'distinguishing_marks': '',
-            #     'nationality': '',
-            #     'age_range': '',
-            #     'date_of_birth': '',
-            #     'place_of_birth': '',
-            #     'charges': html.css('ul.list-group li.list-group-item'),
-            #     'wanted_by': 'RCMP',
-            #     'publication': '',
-            #     'last_modified': html.css('time').text(),
-            #     'status': html.css_first('p.mrgn-bttm-md').text(),
-            #     'reward': '',
-            #     'details': description[1].text(),
-            #     'caution': '',
-            #     'warning': '',
-            #     'images': image,
-            #     'link': URL,
-            # }
-            # profile_extracts.append(profile)
-            # print(profile)
+        for i in profile_extracts:
+            print(profile)
+            print('\n')
 
-            print('########################')
+        # print('########################')
 
 
 
