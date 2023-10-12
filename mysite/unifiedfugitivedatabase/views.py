@@ -2,12 +2,12 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.urls import reverse
 from rest_framework import viewsets
-from .serializers import FugitiveRecordsSerializer
-from .models import FugitiveRecords
+from .serializers import FugitiveProfilesSerializer
+from .models import FugitiveProfiles
 
-class FugitiveRecordsView(viewsets.ModelViewSet):
-    serializer_class = FugitiveRecordsSerializer
-    queryset = FugitiveRecords.objects.all()
+class FugitiveProfilesView(viewsets.ModelViewSet):
+    serializer_class = FugitiveProfilesSerializer
+    queryset = FugitiveProfiles.objects.all()
 
 
 

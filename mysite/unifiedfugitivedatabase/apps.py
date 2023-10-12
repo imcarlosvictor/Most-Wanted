@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class MostWantedConfig(AppConfig):
+class UnifiedFugitiveDatabaseConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'mostwanted'
+    name = 'unifiedfugitivedatabase'

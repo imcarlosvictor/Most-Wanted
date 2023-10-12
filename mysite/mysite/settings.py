@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'mostwanted',
+    'unifiedfugitivedatabase',
 ]
 
 
@@ -126,7 +126,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [ os.path.join(BASE_DIR,'mostwanted/') ]
+STATICFILES_DIRS = [ os.path.join(BASE_DIR,'unifiedfugitivedatabase/') ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 
 # Default primary key field type

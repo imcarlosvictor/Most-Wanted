@@ -2,7 +2,7 @@ from django.urls import path
 
 from . import views
 
-app_name = 'mostwanted'
+app_name = 'unifiedfugitivedatabase'
 urlpatterns = [
     path('', views.landing, name='landing'),
     path('database/', views.database, name='database'),

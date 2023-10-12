@@ -48,17 +48,73 @@ body {
 	border: none;
 }
 
+.material-symbols-outlined {
+	position: absolute;
+	top: 1.2em;
+	left: 1.5em;
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
 /* ##################################################################### */
 /* LANDING PAGE */
 /* ##################################################################### */
 .content {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	display: block;
+	/* position: absolute; */
+	/* top: 50%; */
+	/* left: 50%; */
+	/* transform: translate(-50%, -50%); */
+	/* display: block; */
 	/* border: 1px solid red; */
 	padding: 1em;
+}
+
+.navbar {
+	position: absolute;
+	top: 0;
+	left: 0;
+	/* background-color: red; */
+	width: 6%;
+	height: 100%;
+}
+
+.nav-button-div {
+	position: absolute;
+	bottom: 2em;
+	left: 1em;
+}
+
+.buttons {
+	display: grid;
+	grid-template-columns: 1fr;
+	list-style-type: none;
+}
+
+.buttons li  {
+	background: var(--white);
+	margin-top: 1px;
+	margin-bottom: 1px;
+}
+
+.buttons a {
+	display: grid;
+	justify-content: center;
+	align-items: center;
+	height: 25px;
+	text-trnsform: uppercase;
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 15px;
+	color: var(--black);
+	padding-left: .5em;
+	padding-right: .5em;
+}
+
+.buttons li:hover {
+	opacity: 0.8;
+	/* background: var(--white); */
 }
 
 .form-field {
@@ -69,11 +125,16 @@ body {
 
 .material-symbols-outlined {
 	position: relative;
-	top: 37px;
-	left: 10px;
+	/* top: 37px; */
+	/* left: 10px; */
 }
 
 #search-bar {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	display: block;
 	display: block;
 	width: 600px;
 	height: 40px;
@@ -90,49 +151,6 @@ body {
 	/* caret-style: block; */
 }
 
-.buttons {
-	position: absolute;
-	bottom: 2em;
-	left: 1em;
-	display: grid;
-	grid-template-columns: 1fr 1fr 1fr 1fr;
-}
-
-/* .buttons { */
-/* 	display: grid; */
-/* 	grid-template-columns: 1fr 1fr 1fr 1fr; */
-/* 	width: 100%; */
-/* 	list-style-type: none; */
-/* } */
-
-.buttons li  {
-	background: var(--white);
-}
-
-.buttons li:nth-child(2), li:nth-child(3) {
-	margin: 0 .15em 0 .3em;
-}
-
-.buttons li:nth-child(3) {
-	margin: 0 .3em 0 .15em;
-}
-
-.buttons a {
-	display: grid;
-	justify-content: center;
-	align-items: center;
-	height: 30px;
-	text-transform: uppercase;
-	text-decoration: none;
-	font-weight: bold;
-	font-size: 20px;
-	color: var(--black);
-}
-
-.buttons li:hover {
-	opacity: 0.8;
-	/* background: var(--white); */
-}
 
 
 
