@@ -13,22 +13,22 @@ const Navbar = () => {
   return (
     <nav className="navbar">
         <div className="navbar-container">
-          <div className="nav-button-list">
-            <ul className="button-list">
+          <div className="navigation-list">
+            <ul className="navigation-buttons">
               <li>
-                <NavLink to="/">Search</NavLink>
+                <span className="navlink-btn"><Link to="/" >Search</Link></span>
               </li>
               <li>
-                <NavLink to="/about">About</NavLink>
+                <span className="navlink-btn"><Link to="/about">About</Link></span>
               </li>
               <li>
-                <NavLink to="/database">Database</NavLink>
+                <span className="navlink-btn"><Link to="/database">Database</Link></span>
               </li>
               <li>
-                <NavLink to="/analytics">Analytics</NavLink>
+                <span className="navlink-btn"><Link to="/analytics">Analytics</Link></span>
               </li>
               <li>
-                <NavLink to="/map">Map</NavLink>
+                <span className="navlink-btn"><Link to="/map">Map</Link></span>
               </li>
             </ul>
           </div>
@@ -38,3 +38,4 @@ const Navbar = () => {
 }
 
 export default Navbar;
+

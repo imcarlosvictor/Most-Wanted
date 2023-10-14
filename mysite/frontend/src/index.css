@@ -2,24 +2,23 @@
 	position: absolute;
 	top: 0;
 	left: 0;
-	background-color: red;
 	width: 6%;
 	height: 100%;
 }
 
-.nav-button-div {
+.navigation-list {
 	position: absolute;
 	bottom: 2em;
 	left: 1em;
 }
 
-.buttons-list {
+.navigation-buttons {
 	display: grid;
 	grid-template-columns: 1fr;
 	list-style-type: none;
 }
 
-.nav-link {
+.navigation-buttons li {
 	background: var(--white);
 	margin-top: 1px;
 	margin-bottom: 1px;
@@ -27,6 +26,14 @@
 	justify-content: center;
 	align-items: center;
 	height: 25px;
+}
+
+a:-webkit-any-link {
+	color: var(--black);
+	text-decoration: none;
+}
+
+.navlink-btn {
 	text-transform: uppercase;
 	text-decoration: none;
 	font-weight: bold;
@@ -36,7 +43,7 @@
 	padding-right: .5em;
 }
 
-.nav-link:hover {
+.navigation-buttons li:hover {
 	opacity: 0.8;
 	/* background: var(--white); */
 }
