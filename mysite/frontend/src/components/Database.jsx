@@ -7,5 +7,5 @@ export default function Database() {
     <>
       <h2>Database</h2>
     </>
-  )
+  );
 }

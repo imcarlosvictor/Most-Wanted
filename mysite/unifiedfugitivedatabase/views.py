@@ -12,10 +12,10 @@ class FugitiveProfilesView(viewsets.ModelViewSet):
 
 
 # Create your views here.
-def landing(request):
+def search(request):
     greet = 'hello'
     context = {'greetings': greet}
-    return render(request, 'landing.html', context)
+    return render(request, 'search.html', context)
 
 def database(request):
     return render(request, 'database.html')

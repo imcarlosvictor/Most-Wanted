@@ -7,5 +7,5 @@ export default function Analytics() {
     <>
       <h2>Analytics</h2>
     </>
-  )
+  );
 }
