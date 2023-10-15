@@ -15,21 +15,11 @@ const Navbar = () => {
         <div className="navbar-container">
           <div className="navigation-list">
             <ul className="navigation-buttons">
-              <li>
-                <span className="navlink-btn"><Link to="/" >Search</Link></span>
-              </li>
-              <li>
-                <span className="navlink-btn"><Link to="/about">About</Link></span>
-              </li>
-              <li>
-                <span className="navlink-btn"><Link to="/database">Database</Link></span>
-              </li>
-              <li>
-                <span className="navlink-btn"><Link to="/analytics">Analytics</Link></span>
-              </li>
-              <li>
-                <span className="navlink-btn"><Link to="/map">Map</Link></span>
-              </li>
+              <li><span className="navlink-btn"><Link to="/" >Search</Link></span></li>
+              <li><span className="navlink-btn"><Link to="/database">Database</Link></span></li>
+              <li><span className="navlink-btn"><Link to="/analytics">Analytics</Link></span></li>
+              <li><span className="navlink-btn"><Link to="/map">Map</Link></span></li>
+              <li><span className="navlink-btn"><Link to="/about">About</Link></span></li>
             </ul>
           </div>
         </div>

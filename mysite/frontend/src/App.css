@@ -5,8 +5,9 @@
 	--darkgrey: #121212;
 	/* --greengrey: #212929; */
 	--greengrey: #303c3c;
-	--white: #d9d5d0;
-	--white: #e5e3e2;
+	/* --white: #d9d5d0; */
+	/* --white: #e5e3e2; */
+	--white: #d3d7cf;
 	--red: #ff0044;
 	--orange: #ff9f00;
 }
@@ -73,8 +74,9 @@ body {
 
 .form-field {
 	background: none;
-	border: none;
+	/* border: none; */
 	border-radius: .5px;
+	border: 1px solid var(--white);
 }
 
 .material-symbols-outlined {
@@ -95,7 +97,7 @@ body {
 	margin-bottom: .5em;
 	/* border-bottom: 2px solid var(--white); */
 	padding-left: 2.7em;
-	background: var(--darkgrey);
+	background: var(--black);
 }
 
 #search-bar:focus {

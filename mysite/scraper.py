@@ -1,126 +1,42 @@
-import requests
+import os
 import json
+import csv
 import pandas as pd
 import httpx
+import requests
 from selectolax.parser import HTMLParser
 
 
+DIRECTORY_PATH = os.path.abspath(os.path.dirname(__file__))
+RAW_PROFILE_EXTRACT_CSV = os.path.abspath(os.path.join(DIRECTORY_PATH, './raw_profile_extracts.csv'))
 
-def toronto_fugitive_profiles_list():
-    """
-    Extract records.
-    """
 
-    profile_links = set()
-    for i in range(1, 5):
-        url = f'https://www.tps.ca/organizational-chart/specialized-operations-command/detective-operations/investigative-services/homicide/most-wanted/?page={i}'
-        response = httpx.get(url)
-        html = HTMLParser(response.text)
+class RcmpScraper:
+    def __init__(self, raw_data_list):
+        self.raw_data_list = raw_data_list
 
-        # Base case
-        current_page_number = html.css_first('div.pagination li.active').text()
-        if int(current_page_number) != i:
-            break
-
-        # Extract fugitive profile links
-        links = html.css('article.suspect a')
-        for link in links:
-            profile_links.add(link.attributes['href'])
-
-    return profile_links
-
-def toronto_fugitive_profile_extract():
-    """
-    Extract data from records.
-    """
-    profile_links = toronto_fugitive_profiles_list()
-    link = list(profile_links)
-    url = f'https://www.tps.ca{link[2]}'
-    print(url)
-    response = httpx.get(url)
+    def save_to_csv(self, *argv):
+        with open(RAW_PROFILE_EXTRACT_CSV, 'w', newline='') as file:
+            writer = csv.writer(file)
+            values = [ value for value in argv ]
+            writer.writerow(values)
+    
+    def get_profiles(self):
+    fugitive_profile_links = set()
+    URL = 'https://www.rcmp-grc.gc.ca/en/wanted'
+    response = httpx.get(URL)
     html = HTMLParser(response.text)
 
-    # Extract
-    name = html.css_first('div.people-content h1').text()
-    print(name)
-    info_block = html.css('div.meta p')
+    profile_link = html.css('a.text-neutral')
+    for link in profile_link:
+        fugitive_profile_links.add(link.attributes['href'])
 
-    charge = info_block[0].text().strip()
-    print(charge)
+    return fugitive_profile_links
 
-    profile_content = html.css('div.people-content p')
-    # print(profile_content)
-    print(profile_content[3].text().strip())
-    print(profile_content[4].text().strip())
-    # print(profile_content[2].text().strip())
-    print('\n')
-
-    for link in profile_links:
-        url = f'https://www.tps.ca{link}'
-        print(url)
-        response = httpx.get(url)
-        html = HTMLParser(response.text)
-
-        # Extract
-        name = html.css_first('div.people-content h1').text()
-        print(name)
-        info_block = html.css('div.meta p')
-
-        charge = info_block[0].text().strip()
-        print(charge)
-
-        profile_content = html.css('div.people-content p')
-        # print(profile_content)
-        print(profile_content[3].text().strip())
-        # print(profile_content[3].text().strip())
-        # print(profile_content[2].text().strip())
-        print('\n')
-
-        # #######################################################
-        # 'name'
-        # 'aliases': fbi_data_pd['items'][i]['aliases'],
-        # 'sex': fbi_data_pd['items'][i]['sex'],
-        # 'weight': fbi_data_pd['items'][i]['weight'],
-        # 'eyes': fbi_data_pd['items'][i]['eyes'],
-        # 'hair': fbi_data_pd['items'][i]['hair'],
-        # 'distinguishing_marks': fbi_data_pd['items'][i]['scars_and_marks'],
-        # 'nationality': fbi_data_pd['items'][i]['nationality'],
-        # 'date_of_birth': fbi_data_pd['items'][i]['dates_of_birth_used'],
-        # 'place_of_birth': fbi_data_pd['items'][i]['place_of_birth'],
-        # 'charges': fbi_data_pd['items'][i]['subjects'],
-        # 'wanted_by': 'FBI',
-        # 'status': fbi_data_pd['items'][i]['status'],
-        # 'publication': fbi_data_pd['items'][i]['publication'],
-        # 'last_modified': fbi_data_pd['items'][i]['modified'],
-        # 'reward': fbi_data_pd['items'][i]['reward_max'],
-        # 'details': fbi_data_pd['items'][i]['details'],
-        # 'caution': fbi_data_pd['items'][i]['caution'],
-        # 'warning': fbi_data_pd['items'][i]['warning_message'],
-        # 'images': '',
-        # 'link': fbi_data_pd['items'][i]['url'],
-
-
-
-class Scraper:
-    def __init__(self):
-        self.compiled_fugitive_list = []
-
-    def rcmp_fugitive_profile_list(self):
-        fugitive_profile_links = set()
-        URL = 'https://www.rcmp-grc.gc.ca/en/wanted'
-        response = httpx.get(URL)
-        html = HTMLParser(response.text)
-
-        profile_link = html.css('a.text-neutral')
-        for link in profile_link:
-            fugitive_profile_links.add(link.attributes['href'])
-
-        return fugitive_profile_links
-
-    def scrape_rcmp_fugitive_profiles(self):
+    def extract_profile_data(self):
         print('Extracting RCMP Fugitives...')
         fugitive_profile_extracts = []
-        fugitive_profiles = self.rcmp_fugitive_profile_list()
+        fugitive_profiles = self.get_profiles()
         for profile in fugitive_profiles:
             URL = f'https://www.rcmp-grc.gc.ca/en/{profile}'
             # print(URL)
@@ -202,9 +118,14 @@ class Scraper:
             fugitive_profile_extracts.append(profile)
 
         for profile in fugitive_profile_extracts:
-            self.compiled_fugitive_list.append(list(profile.values()))
+            self.raw_data_list.append(list(profile.values()))
 
-    def scrape_fbi_fugitive_profiles(self):
+
+class FbiScraper:
+    def __init__(self, raw_data_list):
+        self.raw_data_list = raw_data_list
+
+    def extract_profile_data(self):
         """
         Implements api pagination.
         """
@@ -263,9 +184,14 @@ class Scraper:
             page += 1
 
         for profile in fugitive_profile_extracts:
-            self.compiled_fugitive_list.append(list(profile.values()))
+            self.raw_data_list.append(list(profile.values()))
 
-    def interpol_fugitive_id(self):
+
+class InterpolScraper:
+    def __init__(self, raw_data_list):
+        self.raw_data_lsit = raw_data_list
+
+    def get_profiles(self):
         fugitive_id_list = []
         for i in range(0, 346):
             interpol_response = requests.get(f'https://ws-public.interpol.int/notices/v1/red?page={i}')
@@ -278,7 +204,6 @@ class Scraper:
 
             additional_info_url = 'https://ws-public.interpol.int/notices/v1/red/'
             for i in range(0, len(interpol_data['_embedded']['notices'])):
-                # interpol_data['_embedded']['notices'][i]['']
                 entity_id = interpol_data['_embedded']['notices'][i]['entity_id']
                 fugitive_id = additional_info_url + entity_id.replace('/','-')
                 fugitive_id_list.append(fugitive_id)
@@ -289,10 +214,10 @@ class Scraper:
         print('there')
         return fugitive_id_list
 
-    def scrape_interpol_fugitive_profiles(self):
+    def extract_profile_data(self):
         print('Extracting Interpol Fugitives...')
         fugitive_profile_extracts = []
-        individual_red_notice_url = self.interpol_fugitive_id()
+        individual_red_notice_url = self.get_profiles()
         # print(individual_red_notice_url)
         # print(len(individual_red_notice_url))
         for url in individual_red_notice_url:
@@ -339,16 +264,113 @@ class Scraper:
             fugitive_profile_extracts.append(record)
 
         for profile in fugitive_profiles_extract:
-            self.compiled_fugitive_list.append(list(profile.values()))
+            self.raw_data_list.append(list(profile.values()))
+
+
+class TorontoPeelPoliceScraper:
+    def __init__(self, raw_data_list):
+        self.raw_data_list = raw_data_list
+
+    def get_profiles(self):
+        """
+        Extract records.
+        """
+        profile_links = set()
+        for i in range(1, 5):
+            url = f'https://www.tps.ca/organizational-chart/specialized-operations-command/detective-operations/investigative-services/homicide/most-wanted/?page={i}'
+            response = httpx.get(url)
+            html = HTMLParser(response.text)
+
+            # Base case
+            current_page_number = html.css_first('div.pagination li.active').text()
+            if int(current_page_number) != i:
+                break
+
+            # Extract fugitive profile links
+            links = html.css('article.suspect a')
+            for link in links:
+                profile_links.add(link.attributes['href'])
+
+        return profile_links
+
+    def extract_profile_data(self):
+        """
+        Extract data from records.
+        """
+        profile_links = toronto_fugitive_profiles_list()
+        link = list(profile_links)
+        url = f'https://www.tps.ca{link[2]}'
+        print(url)
+        response = httpx.get(url)
+        html = HTMLParser(response.text)
+
+        # Extract
+        name = html.css_first('div.people-content h1').text()
+        print(name)
+        info_block = html.css('div.meta p')
+
+        charge = info_block[0].text().strip()
+        print(charge)
+
+        profile_content = html.css('div.people-content p')
+        # print(profile_content)
+        print(profile_content[3].text().strip())
+        print(profile_content[4].text().strip())
+        # print(profile_content[2].text().strip())
+        print('\n')
+
+        for link in profile_links:
+            url = f'https://www.tps.ca{link}'
+            print(url)
+            response = httpx.get(url)
+            html = HTMLParser(response.text)
+
+            # Extract
+            name = html.css_first('div.people-content h1').text()
+            print(name)
+            info_block = html.css('div.meta p')
+
+            charge = info_block[0].text().strip()
+            print(charge)
+
+            profile_content = html.css('div.people-content p')
+            # print(profile_content)
+            print(profile_content[3].text().strip())
+            # print(profile_content[3].text().strip())
+            # print(profile_content[2].text().strip())
+            print('\n')
+
+            # #######################################################
+            # 'name'
+            # 'aliases': fbi_data_pd['items'][i]['aliases'],
+            # 'sex': fbi_data_pd['items'][i]['sex'],
+            # 'weight': fbi_data_pd['items'][i]['weight'],
+            # 'eyes': fbi_data_pd['items'][i]['eyes'],
+            # 'hair': fbi_data_pd['items'][i]['hair'],
+            # 'distinguishing_marks': fbi_data_pd['items'][i]['scars_and_marks'],
+            # 'nationality': fbi_data_pd['items'][i]['nationality'],
+            # 'date_of_birth': fbi_data_pd['items'][i]['dates_of_birth_used'],
+            # 'place_of_birth': fbi_data_pd['items'][i]['place_of_birth'],
+            # 'charges': fbi_data_pd['items'][i]['subjects'],
+            # 'wanted_by': 'FBI',
+            # 'status': fbi_data_pd['items'][i]['status'],
+            # 'publication': fbi_data_pd['items'][i]['publication'],
+            # 'last_modified': fbi_data_pd['items'][i]['modified'],
+            # 'reward': fbi_data_pd['items'][i]['reward_max'],
+            # 'details': fbi_data_pd['items'][i]['details'],
+            # 'caution': fbi_data_pd['items'][i]['caution'],
+            # 'warning': fbi_data_pd['items'][i]['warning_message'],
+            # 'images': '',
+            # 'link': fbi_data_pd['items'][i]['url'],
+
 
 
 
 def main():
-    sc = Scraper()
-    # sc.scrape_rcmp_fugitive_profiles()
-    sc.scrape_fbi_fugitive_profiles()
-    # sc.interpol_fugitive_id()
-    # sc.scrape_interpol_fugitive_profiles()
+    rcmp = Scraper(raw_data_list)
+    fbi = FbiScraper(raw_data_list)
+    interpol = InterpolScraper(raw_data_list)
+
 
     for i in sc.compiled_fugitive_list:
         print(i)

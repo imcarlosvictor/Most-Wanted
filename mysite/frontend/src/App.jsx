@@ -15,11 +15,11 @@ function App(props) {
     <BrowserRouter>
       <Navbar />
       <Routes>
-        <Route path="/" elements={<Search/>}/>
-        <Route path="/about" elements={<About/>}/>
-        <Route path="/database" elements={<Database/>}/>
-        <Route path="/analytics" elements={<Analytics/>}/>
-        <Route path="/map" elements={<Map/>}/>
+        <Route path="/" element={<Search/>}/>
+        <Route path="/about" element={<About/>}/>
+        <Route path="/database" element={<Database/>}/>
+        <Route path="/analytics" element={<Analytics/>}/>
+        <Route path="/map" element={<Map/>}/>
       </Routes>
     </BrowserRouter>
   )
