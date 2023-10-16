@@ -12,11 +12,6 @@ RAW_PROFILE_EXTRACT_CSV = os.path.abspath(os.path.join(DIRECTORY_PATH, './raw_pr
 
 
 class RcmpScraper:
-    def save_to_csv(self, profile_data):
-        with open(RAW_PROFILE_EXTRACT_CSV, 'a', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow(profile_data)
-    
     def get_profiles(self):
         fugitive_profile_links = set()
         URL = 'https://www.rcmp-grc.gc.ca/en/wanted'
@@ -132,40 +127,19 @@ class RcmpScraper:
                     profile_values_clean += text
             profile_values[1] = profile_values_clean 
 
+            # Clean data
+
             # Save profile
             self.save_to_csv(profile_values)
             current_profile_count += 1
 
-            # profile = {
-            #     'name': name.text(),
-            #     'alias': profile_values[0],
-            #     'sex': profile_values[1],
-            #     'height': profile_values[6],
-            #     'weight': profile_values[7],
-            #     'eyes': profile_values[4],
-            #     'hair': profile_values[5],
-            #     'distinguishing_marks': '',
-            #     'nationality': '',
-            #     'date_of_birth': profile_values[2],
-            #     'place_of_birth': profile_values[3],
-            #     'charges': [ charge.text() for charge in charges ],
-            #     'wanted_by': 'RCMP',
-            #     'status': status,
-            #     'publication': '',
-            #     'last_modified': last_modified.text(),
-            #     'reward': '',
-            #     'details': details_cleaned,
-            #     'caution': '',
-            #     'remarks': '',
-            #     'images': image,
-            #     'link': URL,
-            # }
-            # fugitive_profile_extracts.append(profile)
+    def clean_data(self, profile_val):
+        pass
 
-        # for profile in fugitive_profile_extracts:
-            # self.raw_data_list.append(list(profile.values()))
-
-
+    def save_to_csv(self, profile_data):
+        with open(RAW_PROFILE_EXTRACT_CSV, 'a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(profile_data)
 
 
 class FbiScraper:
@@ -269,13 +243,13 @@ class InterpolScraper:
             interpol_response = requests.get(url)
             interpol_data = json.loads(interpol_response.content)
             # Check if a profile consists of images
-            profile_image = ''
-            profile_link = ''
-            if interpol_data['_links']:
-                if interpol_data['_links']['images']:
-                    images = interpol_data['_links']['images']['href'] if interpol_data['_links']['images']['href'] else ''
-                if interpol_data['_links']['self']:
-                    link = interpol_data['_links']['self']['href'] if interpol_data['_links']['self']['href'] else ''
+            try:
+                profile_image = ''
+                if interpol_data['_links']:
+                    if interpol_data['_links']['images']:
+                        profile_image = interpol_data['_links']['thumbnail']['href'] if interpol_data['_links']['thumbnail']['href'] else ''
+            except:
+                print('No image')
 
             firstname = interpol_data['forename'] if interpol_data['forename'] else ''
             lastname = interpol_data['name'] if interpol_data['name'] else ''
@@ -302,7 +276,9 @@ class InterpolScraper:
             caution = ''
             remarks = ''
             image = profile_image
-            link = '' 
+            link = ''
+
+            print(url)
 
             profile_values = [
                 name,
@@ -334,7 +310,6 @@ class InterpolScraper:
             print(profile_values)
 
             # Save profile
-            # print(profile_values)
             self.save_to_csv(profile_values)
             current_profile_count += 1
 
@@ -372,6 +347,8 @@ class InterpolScraper:
             profile_val[5] = 'brown'
         elif 'BLU' in profile_val[5]:
             profile_val[5] = 'blue'
+        else:
+            profile_val[5] = ''
 
         # --------------- HAIR ---------------
         if 'BLA' in profile_val[6]:
@@ -384,6 +361,8 @@ class InterpolScraper:
             profile_val[6] = 'brown'
         elif 'BLU' in profile_val[6]:
             profile_val[6] = 'blue'
+        else:
+            profile_val[6] = ''
 
         # --------------- PLACE OF BIRTH ---------------
         from deep_translator import GoogleTranslator
@@ -394,40 +373,14 @@ class InterpolScraper:
         value_to_translate = profile_val[11]
         profile_val[11] = GoogleTranslator(source='auto', target='english').translate(value_to_translate)
 
+        for i in range(0, len(profile_val) - 2):
+            if type(profile_val[i]) == str:
+                profile_val[i] = profile_val[i].lower()
+
     def save_to_csv(self, profile_data):
         with open(RAW_PROFILE_EXTRACT_CSV, 'a', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(profile_data)
-
-            # record = {
-            #     'name': firstname + ' ' + lastname,
-            #     'alias': '',
-            #     'sex': [ interpol_data['sex_id'] if interpol_data['sex_id'] else '' ],
-            #     'height': [ interpol_data['height'] if interpol_data['height'] else '' ],
-            #     'weight': [ interpol_data['weight'] if interpol_data['weight'] else '' ],
-            #     'eyes': [ interpol_data['eyes_colors_id'] if interpol_data['eyes_colors_id'] else '' ],
-            #     'hair': [ interpol_data['hairs_id'] if interpol_data['hairs_id'] else '' ],
-            #     'distinguishing_marks': [ interpol_data['distinguishing_marks'] if interpol_data['distinguishing_marks'] else '' ],
-            #     'nationality': [ interpol_data['nationalities'] if interpol_data['nationalities'] else '' ],
-            #     'date_of_birth': [ interpol_data['date_of_birth'] if interpol_data['date_of_birth'] else '' ],
-            #     'place_of_birth': [ interpol_data['place_of_birth'] if interpol_data['place_of_birth'] else '' ],
-            #     'charges' : [ interpol_data['arrest_warrants'][0]['charge'] if interpol_data['arrest_warrants'][0]['charge'] else '' ],
-            #     'wanted_by': [ interpol_data['arrest_warrants'][0]['issuing_country_id'] if interpol_data['arrest_warrants'][0]['issuing_country_id'] else '' ],
-            #     'status': 'wanted',
-            #     'publication': '',
-            #     'last_modified': '',
-            #     'reward': '',
-            #     'details': '',
-            #     'caution': '',
-            #     'remarks': '',
-            #     'images': images,
-            #     'thumbnail': '',
-            #     'link': link,
-            # }
-            # fugitive_profile_extracts.append(record)
-
-        # for profile in fugitive_profiles_extract:
-            # self.raw_data_list.append(list(profile.values()))
 
 
 class TorontoPeelPoliceScraper:
