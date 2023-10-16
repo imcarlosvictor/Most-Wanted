@@ -12,32 +12,30 @@ RAW_PROFILE_EXTRACT_CSV = os.path.abspath(os.path.join(DIRECTORY_PATH, './raw_pr
 
 
 class RcmpScraper:
-    def __init__(self, raw_data_list):
-        self.raw_data_list = raw_data_list
-
-    def save_to_csv(self, *argv):
-        with open(RAW_PROFILE_EXTRACT_CSV, 'w', newline='') as file:
+    def save_to_csv(self, profile_data):
+        with open(RAW_PROFILE_EXTRACT_CSV, 'a', newline='') as file:
             writer = csv.writer(file)
-            values = [ value for value in argv ]
-            writer.writerow(values)
+            writer.writerow(profile_data)
     
     def get_profiles(self):
-    fugitive_profile_links = set()
-    URL = 'https://www.rcmp-grc.gc.ca/en/wanted'
-    response = httpx.get(URL)
-    html = HTMLParser(response.text)
+        fugitive_profile_links = set()
+        URL = 'https://www.rcmp-grc.gc.ca/en/wanted'
+        response = httpx.get(URL)
+        html = HTMLParser(response.text)
 
-    profile_link = html.css('a.text-neutral')
-    for link in profile_link:
-        fugitive_profile_links.add(link.attributes['href'])
+        profile_link = html.css('a.text-neutral')
+        for link in profile_link:
+            fugitive_profile_links.add(link.attributes['href'])
 
-    return fugitive_profile_links
+        return fugitive_profile_links
 
     def extract_profile_data(self):
         print('Extracting RCMP Fugitives...')
         fugitive_profile_extracts = []
         fugitive_profiles = self.get_profiles()
+        current_profile_count = 1
         for profile in fugitive_profiles:
+            print(f'Extracting {current_profile_count} of {len(fugitive_profiles)}')
             URL = f'https://www.rcmp-grc.gc.ca/en/{profile}'
             # print(URL)
             response = httpx.get(URL)
@@ -45,26 +43,35 @@ class RcmpScraper:
 
             # Extracts
             name = html.css_first('h1.page-header')
+            name = name.text()
+            alias = ''
             status = html.css_first('p.mrgn-bttm-md').text()
+            height = ''
+            weight = ''
+            eyes = ''
+            hair = ''
+            distinguishing_marks = ''
+            nationality = ''
+            date_of_birth = ''
+            place_of_birth = ''
             charges = html.css('ul.list-group li.list-group-item') # list of charges
-            last_modified = html.css_first('time')
-            description = html.css('div.col-md-9 p') # description[1].text()
-            details = description[1].text()
+            charges = [ charge.text() for charge in charges ]
+            wanted_by = 'rcmp'
+            status = 'wanted'
+            publication = ''
+            last_modified = html.css_first('time').text()
+            reward = ''
+            details = html.css('div.col-md-9 p') # description[1].text()
+            details = details[1].text()
             details_cleaned = details.replace('\xa0', ' ')
+            caution = ''
+            remarks = ''
             image = html.css_first('img.img-responsive').attributes['src']
             image = 'https://www.rcmp-grc.gc.ca' + image
+            link = URL
             # To determine the value associtaed with the extracted list, split the sentence into
             # words, and assign the value to the right variable with the first word
             personal_details = html.css('ul.list-unstyled li')
-            alias = ''
-            sex = ''
-            date_of_birth = ''
-            place_of_birth = ''
-            eyes = ''
-            hair = ''
-            height = ''
-            weight = ''
-            scars = ''
             for detail_list in personal_details:
                 details = detail_list.text().split()
                 if details[0] == 'Aliases:':
@@ -87,44 +94,80 @@ class RcmpScraper:
                     pass
                 elif details[0] == 'Scars:':
                     scars = details[1:]
-            # Restructure sentence
-            profile_values = [alias, sex, date_of_birth, place_of_birth, eyes, hair, height, weight, scars]
-            profile_values = [ ''.join(text) if index == 6 or index == 7 else ' '.join(text) for index, text in enumerate(profile_values) ]
+            profile_values = [
+                name,
+                alias,
+                sex,
+                height,
+                weight,
+                eyes,
+                hair,
+                distinguishing_marks,
+                nationality,
+                date_of_birth,
+                place_of_birth,
+                charges,
+                wanted_by,
+                status,
+                publication,
+                last_modified,
+                reward,
+                details,
+                caution,
+                remarks,
+                image,
+                link,
+            ]
+            # Restructure sentence for height and weight
+            profile_values = [ ''.join(text) for text in profile_values ]
+            # Clean alias values
+            profile_values[1] = profile_values[1].replace('/', ' / ')
+            profile_values[1] = profile_values[1].replace(',', ', ')
+            profile_values_clean = ''
+            for text in profile_values[1]:
+                if text.isupper():
+                    profile_values_clean = profile_values_clean + ' ' + text.capitalize()
+                else:
+                    profile_values_clean += text
+            profile_values[1] = profile_values_clean 
 
-            profile = {
-                'name': name.text(),
-                'alias': profile_values[0],
-                'sex': profile_values[1],
-                'height': profile_values[6],
-                'weight': profile_values[7],
-                'eyes': profile_values[4],
-                'hair': profile_values[5],
-                'distinguishing_marks': '',
-                'nationality': '',
-                'date_of_birth': profile_values[2],
-                'place_of_birth': profile_values[3],
-                'charges': [ charge.text() for charge in charges ],
-                'wanted_by': 'RCMP',
-                'status': status,
-                'publication': '',
-                'last_modified': last_modified.text(),
-                'reward': '',
-                'details': details_cleaned,
-                'caution': '',
-                'remarks': '',
-                'images': image,
-                'link': URL,
-            }
-            fugitive_profile_extracts.append(profile)
+            # Save profile
+            self.save_to_csv(profile_values)
+            current_profile_count += 1
 
-        for profile in fugitive_profile_extracts:
-            self.raw_data_list.append(list(profile.values()))
+            # profile = {
+            #     'name': name.text(),
+            #     'alias': profile_values[0],
+            #     'sex': profile_values[1],
+            #     'height': profile_values[6],
+            #     'weight': profile_values[7],
+            #     'eyes': profile_values[4],
+            #     'hair': profile_values[5],
+            #     'distinguishing_marks': '',
+            #     'nationality': '',
+            #     'date_of_birth': profile_values[2],
+            #     'place_of_birth': profile_values[3],
+            #     'charges': [ charge.text() for charge in charges ],
+            #     'wanted_by': 'RCMP',
+            #     'status': status,
+            #     'publication': '',
+            #     'last_modified': last_modified.text(),
+            #     'reward': '',
+            #     'details': details_cleaned,
+            #     'caution': '',
+            #     'remarks': '',
+            #     'images': image,
+            #     'link': URL,
+            # }
+            # fugitive_profile_extracts.append(profile)
+
+        # for profile in fugitive_profile_extracts:
+            # self.raw_data_list.append(list(profile.values()))
+
+
 
 
 class FbiScraper:
-    def __init__(self, raw_data_list):
-        self.raw_data_list = raw_data_list
-
     def extract_profile_data(self):
         """
         Implements api pagination.
@@ -188,9 +231,6 @@ class FbiScraper:
 
 
 class InterpolScraper:
-    def __init__(self, raw_data_list):
-        self.raw_data_lsit = raw_data_list
-
     def get_profiles(self):
         fugitive_id_list = []
         for i in range(0, 346):
@@ -268,9 +308,6 @@ class InterpolScraper:
 
 
 class TorontoPeelPoliceScraper:
-    def __init__(self, raw_data_list):
-        self.raw_data_list = raw_data_list
-
     def get_profiles(self):
         """
         Extract records.
@@ -367,15 +404,11 @@ class TorontoPeelPoliceScraper:
 
 
 def main():
-    rcmp = Scraper(raw_data_list)
-    fbi = FbiScraper(raw_data_list)
-    interpol = InterpolScraper(raw_data_list)
+    rcmp = RcmpScraper()
+    fbi = FbiScraper()
+    interpol = InterpolScraper()
 
-
-    for i in sc.compiled_fugitive_list:
-        print(i)
-        print('\n')
-    print(len(sc.compiled_fugitive_list))
+    rcmp.extract_profile_data()
 
 
 if __name__ == '__main__':
