@@ -30,7 +30,9 @@ class RcmpScraper:
         return fugitive_profile_links
 
     def extract_profile_data(self):
+        print('------------------------------------')
         print('Extracting RCMP Fugitives...')
+        print('------------------------------------')
         fugitive_profile_extracts = []
         fugitive_profiles = self.get_profiles()
         current_profile_count = 1
@@ -42,10 +44,9 @@ class RcmpScraper:
             html = HTMLParser(response.text)
 
             # Extracts
-            name = html.css_first('h1.page-header')
-            name = name.text()
+            name = html.css_first('h1.page-header').text()
             alias = ''
-            status = html.css_first('p.mrgn-bttm-md').text()
+            sex = ''
             height = ''
             weight = ''
             eyes = ''
@@ -168,11 +169,18 @@ class RcmpScraper:
 
 
 class FbiScraper:
+    def save_to_csv(self, profile_data):
+        with open(RAW_PROFILE_EXTRACT_CSV, 'a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(profile_data)
+
     def extract_profile_data(self):
         """
         Implements api pagination.
         """
+        print('------------------------------------')
         print('Extracting FBI Fugitives...')
+        print('------------------------------------')
         fugitive_profile_extracts = []
         page = 1
         while True:
@@ -239,72 +247,187 @@ class InterpolScraper:
 
             # Base case
             if interpol_data['query']['page'] != i:
-                return
-            # print(interpol_data['query']['page'])
+                return fugitive_id_list
 
             additional_info_url = 'https://ws-public.interpol.int/notices/v1/red/'
             for i in range(0, len(interpol_data['_embedded']['notices'])):
                 entity_id = interpol_data['_embedded']['notices'][i]['entity_id']
                 fugitive_id = additional_info_url + entity_id.replace('/','-')
                 fugitive_id_list.append(fugitive_id)
-        print(fugitive_id_list)
-        print('here')
-        print('\n')
-        print(len(fugitive_id_list))
-        print('there')
+
         return fugitive_id_list
 
     def extract_profile_data(self):
+        print('------------------------------------')
         print('Extracting Interpol Fugitives...')
-        fugitive_profile_extracts = []
-        individual_red_notice_url = self.get_profiles()
-        # print(individual_red_notice_url)
-        # print(len(individual_red_notice_url))
-        for url in individual_red_notice_url:
-            # print(len(interpol_fugitive_records))
+        print('------------------------------------')
+        # fugitive_profile_extracts = []
+        fugitive_id_url = self.get_profiles()
+        current_profile_count = 1
+        for url in fugitive_id_url:
+            print(f'Extracting {current_profile_count} of {len(fugitive_id_url)}')
             interpol_response = requests.get(url)
             interpol_data = json.loads(interpol_response.content)
-            # print(interpol_data['arrest_warrants'])
-            # print(url)
-            # print(interpol_data['_links']['thumbnail'])
             # Check if a profile consists of images
+            profile_image = ''
+            profile_link = ''
             if interpol_data['_links']:
                 if interpol_data['_links']['images']:
-                    images = [ interpol_data['_links']['images']['href'] if interpol_data['_links']['images']['href'] else '' ],
+                    images = interpol_data['_links']['images']['href'] if interpol_data['_links']['images']['href'] else ''
                 if interpol_data['_links']['self']:
-                    link = [ interpol_data['_links']['self']['href'] if interpol_data['_links']['self']['href'] else '' ],
+                    link = interpol_data['_links']['self']['href'] if interpol_data['_links']['self']['href'] else ''
 
-            firstname = [ interpol_data['forename'] if interpol_data['forename'] else '' ]
-            lastname = [ interpol_data['name'] if interpol_data['name'] else '' ]
-            record = {
-                'name': firstname + ' ' + lastname,
-                'alias': '',
-                'sex': [ interpol_data['sex_id'] if interpol_data['sex_id'] else '' ],
-                'height': [ interpol_data['height'] if interpol_data['height'] else '' ],
-                'weight': [ interpol_data['weight'] if interpol_data['weight'] else '' ],
-                'eyes': [ interpol_data['eyes_colors_id'] if interpol_data['eyes_colors_id'] else '' ],
-                'hair': [ interpol_data['hairs_id'] if interpol_data['hairs_id'] else '' ],
-                'distinguishing_marks': [ interpol_data['distinguishing_marks'] if interpol_data['distinguishing_marks'] else '' ],
-                'nationality': [ interpol_data['nationalities'] if interpol_data['nationalities'] else '' ],
-                'date_of_birth': [ interpol_data['date_of_birth'] if interpol_data['date_of_birth'] else '' ],
-                'place_of_birth': [ interpol_data['place_of_birth'] if interpol_data['place_of_birth'] else '' ],
-                'charges' : [ interpol_data['arrest_warrants'][0]['charge'] if interpol_data['arrest_warrants'][0]['charge'] else '' ],
-                'wanted_by': [ interpol_data['arrest_warrants'][0]['issuing_country_id'] if interpol_data['arrest_warrants'][0]['issuing_country_id'] else '' ],
-                'status': 'wanted',
-                'publication': '',
-                'last_modified': '',
-                'reward': '',
-                'details': '',
-                'caution': '',
-                'remarks': '',
-                'images': images,
-                'thumbnail': '',
-                'link': link,
-            }
-            fugitive_profile_extracts.append(record)
+            firstname = interpol_data['forename'] if interpol_data['forename'] else ''
+            lastname = interpol_data['name'] if interpol_data['name'] else ''
 
-        for profile in fugitive_profiles_extract:
-            self.raw_data_list.append(list(profile.values()))
+            # Extracts
+            name = firstname + ' ' + lastname
+            alias = ''
+            sex = interpol_data['sex_id'] if interpol_data['sex_id'] else ''
+            height = interpol_data['height'] if interpol_data['height'] else ''
+            weight = interpol_data['weight'] if interpol_data['weight'] else ''
+            eyes = interpol_data['eyes_colors_id'] if interpol_data['eyes_colors_id'] else ''
+            hair = interpol_data['hairs_id'] if interpol_data['hairs_id'] else ''
+            distinguishing_marks = interpol_data['distinguishing_marks'] if interpol_data['distinguishing_marks'] else ''
+            nationality = interpol_data['nationalities'] if interpol_data['nationalities'] else ''
+            date_of_birth = interpol_data['date_of_birth'] if interpol_data['date_of_birth'] else ''
+            place_of_birth = interpol_data['place_of_birth'] if interpol_data['place_of_birth'] else ''
+            charges = interpol_data['arrest_warrants'][0]['charge'] if interpol_data['arrest_warrants'][0]['charge'] else ''
+            wanted_by = interpol_data['arrest_warrants'][0]['issuing_country_id'] if interpol_data['arrest_warrants'][0]['issuing_country_id'] else ''
+            status = 'wanted'
+            publication = ''
+            last_modified = ''
+            reward = ''
+            details = ''
+            caution = ''
+            remarks = ''
+            image = profile_image
+            link = '' 
+
+            profile_values = [
+                name,
+                alias,
+                sex,
+                height,
+                weight,
+                eyes,
+                hair,
+                distinguishing_marks,
+                nationality,
+                date_of_birth,
+                place_of_birth,
+                charges,
+                wanted_by,
+                status,
+                publication,
+                last_modified,
+                reward,
+                details,
+                caution,
+                remarks,
+                image,
+                link,
+            ]
+
+            # Clean data
+            self.clean_data(profile_values)
+            print(profile_values)
+
+            # Save profile
+            # print(profile_values)
+            self.save_to_csv(profile_values)
+            current_profile_count += 1
+
+    def clean_data(self, profile_val):
+        # --------------- SEX ---------------
+        if profile_val[2] == 'M':            
+            profile_val[2] = 'Male' 
+        elif profile_val[2] == 'F':
+            profile_val[2] = 'Female'
+
+        # --------------- HEIGHT ---------------
+        # Add and extra 0 if necessary and unit of measurement (cm)
+        if profile_val[3]:
+            height = str(profile_val[3]).replace('.','')
+            if len(height) == 2:
+                height += '0cm'
+            elif len(height) > 2:
+                height += 'cm'
+            profile_val[3] = height
+
+        # Add unit of measurement
+        # --------------- WEIGHT ---------------
+        if profile_val[4]:
+            weight = str(profile_val[4])
+            profile_val[4] = weight + 'kg'
+
+        # --------------- EYES ---------------
+        if 'BLA' in profile_val[5]:
+            profile_val[5] = 'black'
+        elif 'BRO' in profile_val[5]:
+            profile_val[5] = 'brown'
+        elif 'BROH' in profile_val[5]:
+            profile_val[5] = 'brown'
+        elif 'BROD' in profile_val[5]:
+            profile_val[5] = 'brown'
+        elif 'BLU' in profile_val[5]:
+            profile_val[5] = 'blue'
+
+        # --------------- HAIR ---------------
+        if 'BLA' in profile_val[6]:
+            profile_val[6] = 'black'
+        elif 'BRO' in profile_val[6]:
+            profile_val[6] = 'brown'
+        elif 'BROH' in profile_val[6]:
+            profile_val[6] = 'brown'
+        elif 'BROD' in profile_val[6]:
+            profile_val[6] = 'brown'
+        elif 'BLU' in profile_val[6]:
+            profile_val[6] = 'blue'
+
+        # --------------- PLACE OF BIRTH ---------------
+        from deep_translator import GoogleTranslator
+        value_to_translate = profile_val[10]
+        profile_val[10] = GoogleTranslator(source='auto', target='english').translate(value_to_translate)
+
+        # --------------- CHARGES ---------------
+        value_to_translate = profile_val[11]
+        profile_val[11] = GoogleTranslator(source='auto', target='english').translate(value_to_translate)
+
+    def save_to_csv(self, profile_data):
+        with open(RAW_PROFILE_EXTRACT_CSV, 'a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(profile_data)
+
+            # record = {
+            #     'name': firstname + ' ' + lastname,
+            #     'alias': '',
+            #     'sex': [ interpol_data['sex_id'] if interpol_data['sex_id'] else '' ],
+            #     'height': [ interpol_data['height'] if interpol_data['height'] else '' ],
+            #     'weight': [ interpol_data['weight'] if interpol_data['weight'] else '' ],
+            #     'eyes': [ interpol_data['eyes_colors_id'] if interpol_data['eyes_colors_id'] else '' ],
+            #     'hair': [ interpol_data['hairs_id'] if interpol_data['hairs_id'] else '' ],
+            #     'distinguishing_marks': [ interpol_data['distinguishing_marks'] if interpol_data['distinguishing_marks'] else '' ],
+            #     'nationality': [ interpol_data['nationalities'] if interpol_data['nationalities'] else '' ],
+            #     'date_of_birth': [ interpol_data['date_of_birth'] if interpol_data['date_of_birth'] else '' ],
+            #     'place_of_birth': [ interpol_data['place_of_birth'] if interpol_data['place_of_birth'] else '' ],
+            #     'charges' : [ interpol_data['arrest_warrants'][0]['charge'] if interpol_data['arrest_warrants'][0]['charge'] else '' ],
+            #     'wanted_by': [ interpol_data['arrest_warrants'][0]['issuing_country_id'] if interpol_data['arrest_warrants'][0]['issuing_country_id'] else '' ],
+            #     'status': 'wanted',
+            #     'publication': '',
+            #     'last_modified': '',
+            #     'reward': '',
+            #     'details': '',
+            #     'caution': '',
+            #     'remarks': '',
+            #     'images': images,
+            #     'thumbnail': '',
+            #     'link': link,
+            # }
+            # fugitive_profile_extracts.append(record)
+
+        # for profile in fugitive_profiles_extract:
+            # self.raw_data_list.append(list(profile.values()))
 
 
 class TorontoPeelPoliceScraper:
@@ -408,7 +531,8 @@ def main():
     fbi = FbiScraper()
     interpol = InterpolScraper()
 
-    rcmp.extract_profile_data()
+    # interpol.get_profiles()
+    interpol.extract_profile_data()
 
 
 if __name__ == '__main__':

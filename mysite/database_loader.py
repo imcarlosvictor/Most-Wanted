@@ -6,6 +6,9 @@ from .raw_profile_extract import fugitive_profiles
 
 
 def transform():
+    """
+    Remove duplicates from extracts.
+    """
     df = pd.DataFrame(fugitive_profiles, columns=[
         'name',
         'alias',
