@@ -69,27 +69,27 @@ class RcmpScraper:
             # words, and assign the value to the right variable with the first word
             personal_details = html.css('ul.list-unstyled li')
             for detail_list in personal_details:
-                details = detail_list.text().split()
-                if details[0] == 'Aliases:':
-                    alias = details[1:]
-                elif details[0] == 'Sex:':
-                    sex = details[1:]
-                elif details[0] == 'Born:':
-                    date_of_birth = details[1:]
-                elif details[0] == 'Place':
-                    place_of_birth = details[3:]
-                elif details[0] == 'Eye':
-                    eyes = details[2:]
-                elif details[0] == 'Hair':
-                    hair = details[2:]
-                elif details[0] == 'Height:':
-                    height = details[1:]
-                elif details[0] == 'Weight:':
-                    weight = details[1:]
-                elif details[0] == 'Tattoos:':
+                description_list = detail_list.text().split()
+                if description_list[0] == 'Aliases:':
+                    alias = description_list[1:]
+                elif description_list[0] == 'Sex:':
+                    sex = description_list[1:]
+                elif description_list[0] == 'Born:':
+                    date_of_birth = description_list[1:]
+                elif description_list[0] == 'Place':
+                    place_of_birth = description_list[3:]
+                elif description_list[0] == 'Eye':
+                    eyes = description_list[2:]
+                elif description_list[0] == 'Hair':
+                    hair = description_list[2:]
+                elif description_list[0] == 'Height:':
+                    height = description_list[1:]
+                elif description_list[0] == 'Weight:':
+                    weight = description_list[1:]
+                elif description_list[0] == 'Tattoos:':
                     pass
-                elif details[0] == 'Scars:':
-                    scars = details[1:]
+                elif description_list[0] == 'Scars:':
+                    scars = description_list[1:]
             profile_values = [
                 name,
                 alias,
@@ -128,13 +128,33 @@ class RcmpScraper:
             profile_values[1] = profile_values_clean 
 
             # Clean data
+            self.clean_data(profile_values)
 
             # Save profile
             self.save_to_csv(profile_values)
             current_profile_count += 1
 
     def clean_data(self, profile_val):
-        pass
+        # --------------- HEIGHT ---------------
+        height_in_cm_reversed  = profile_val[3][-1:-6:-1]
+        profile_val[3] = height_in_cm_reversed[::-1]
+
+        # --------------- WEIGHT ---------------
+        profile_val[4] = profile_val[4][7:]
+
+        # --------------- DATE OF BIRTH ---------------
+        pos = len(profile_val[9]) - 4
+        new_date_value = profile_val[9][:pos] + ' ' + profile_val[9][pos:]
+        profile_val[9] = new_date_value
+
+        print(profile_val[3])
+        print(profile_val[4])
+        print(profile_val[9])
+        for value in profile_val:
+            value.lower()
+        # for i in range(0, len(profile_val) - 2):
+        #     if type(profile_val[i]) == str:
+        #         profile_val[i] = profile_val[i].lower()
 
     def save_to_csv(self, profile_data):
         with open(RAW_PROFILE_EXTRACT_CSV, 'a', newline='') as file:
@@ -330,8 +350,8 @@ class InterpolScraper:
                 height += 'cm'
             profile_val[3] = height
 
-        # Add unit of measurement
         # --------------- WEIGHT ---------------
+        # Add unit of measurement
         if profile_val[4]:
             weight = str(profile_val[4])
             profile_val[4] = weight + 'kg'
@@ -363,6 +383,10 @@ class InterpolScraper:
             profile_val[6] = 'blue'
         else:
             profile_val[6] = ''
+
+        # --------------- NATIONALITY ---------------
+        # TODO: ISO 3166 country code ('CA') to country name ('canada')
+
 
         # --------------- PLACE OF BIRTH ---------------
         from deep_translator import GoogleTranslator
@@ -484,7 +508,7 @@ def main():
     fbi = FbiScraper()
     interpol = InterpolScraper()
 
-    # interpol.get_profiles()
+    rcmp.extract_profile_data()
     interpol.extract_profile_data()
 
 
