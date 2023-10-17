@@ -4,7 +4,9 @@ import csv
 import pandas as pd
 import httpx
 import requests
+import country_converter
 from selectolax.parser import HTMLParser
+from deep_translator import GoogleTranslator
 
 
 DIRECTORY_PATH = os.path.abspath(os.path.dirname(__file__))
@@ -32,7 +34,7 @@ class RcmpScraper:
         fugitive_profiles = self.get_profiles()
         current_profile_count = 1
         for profile in fugitive_profiles:
-            print(f'Extracting {current_profile_count} of {len(fugitive_profiles)}')
+            print(f'Extracting {current_profile_count} of {len(fugitive_profiles)} RCMP Profiles')
             URL = f'https://www.rcmp-grc.gc.ca/en/{profile}'
             # print(URL)
             response = httpx.get(URL)
@@ -147,14 +149,9 @@ class RcmpScraper:
         new_date_value = profile_val[9][:pos] + ' ' + profile_val[9][pos:]
         profile_val[9] = new_date_value
 
-        print(profile_val[3])
-        print(profile_val[4])
-        print(profile_val[9])
-        for value in profile_val:
-            value.lower()
-        # for i in range(0, len(profile_val) - 2):
-        #     if type(profile_val[i]) == str:
-        #         profile_val[i] = profile_val[i].lower()
+        for i in range(0, len(profile_val) - 2):
+            if type(profile_val[i]) == str:
+                profile_val[i] = profile_val[i].lower()
 
     def save_to_csv(self, profile_data):
         with open(RAW_PROFILE_EXTRACT_CSV, 'a', newline='') as file:
@@ -259,7 +256,7 @@ class InterpolScraper:
         fugitive_id_url = self.get_profiles()
         current_profile_count = 1
         for url in fugitive_id_url:
-            print(f'Extracting {current_profile_count} of {len(fugitive_id_url)}')
+            print(f'Extracting {current_profile_count} of {len(fugitive_id_url)} Interpol Profiles')
             interpol_response = requests.get(url)
             interpol_data = json.loads(interpol_response.content)
             # Check if a profile consists of images
@@ -298,8 +295,6 @@ class InterpolScraper:
             image = profile_image
             link = ''
 
-            print(url)
-
             profile_values = [
                 name,
                 alias,
@@ -327,7 +322,6 @@ class InterpolScraper:
 
             # Clean data
             self.clean_data(profile_values)
-            print(profile_values)
 
             # Save profile
             self.save_to_csv(profile_values)
@@ -384,12 +378,11 @@ class InterpolScraper:
         else:
             profile_val[6] = ''
 
-        # --------------- NATIONALITY ---------------
+        # --------------- WANTED BY ---------------
         # TODO: ISO 3166 country code ('CA') to country name ('canada')
-
+        profile_val[12] = country_converter.convert(names=profile_val[12], to='name_short')
 
         # --------------- PLACE OF BIRTH ---------------
-        from deep_translator import GoogleTranslator
         value_to_translate = profile_val[10]
         profile_val[10] = GoogleTranslator(source='auto', target='english').translate(value_to_translate)
 
@@ -476,30 +469,6 @@ class TorontoPeelPoliceScraper:
             # print(profile_content[3].text().strip())
             # print(profile_content[2].text().strip())
             print('\n')
-
-            # #######################################################
-            # 'name'
-            # 'aliases': fbi_data_pd['items'][i]['aliases'],
-            # 'sex': fbi_data_pd['items'][i]['sex'],
-            # 'weight': fbi_data_pd['items'][i]['weight'],
-            # 'eyes': fbi_data_pd['items'][i]['eyes'],
-            # 'hair': fbi_data_pd['items'][i]['hair'],
-            # 'distinguishing_marks': fbi_data_pd['items'][i]['scars_and_marks'],
-            # 'nationality': fbi_data_pd['items'][i]['nationality'],
-            # 'date_of_birth': fbi_data_pd['items'][i]['dates_of_birth_used'],
-            # 'place_of_birth': fbi_data_pd['items'][i]['place_of_birth'],
-            # 'charges': fbi_data_pd['items'][i]['subjects'],
-            # 'wanted_by': 'FBI',
-            # 'status': fbi_data_pd['items'][i]['status'],
-            # 'publication': fbi_data_pd['items'][i]['publication'],
-            # 'last_modified': fbi_data_pd['items'][i]['modified'],
-            # 'reward': fbi_data_pd['items'][i]['reward_max'],
-            # 'details': fbi_data_pd['items'][i]['details'],
-            # 'caution': fbi_data_pd['items'][i]['caution'],
-            # 'warning': fbi_data_pd['items'][i]['warning_message'],
-            # 'images': '',
-            # 'link': fbi_data_pd['items'][i]['url'],
-
 
 
 
