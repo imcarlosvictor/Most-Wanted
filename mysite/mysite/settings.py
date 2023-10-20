@@ -11,13 +11,12 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 import os
-import pymysql
 from pathlib import Path
 
 
 
-pymysql.version_info = (1, 4, 6, 'final', 0)
-pymysql.install_as_MySQLdb()
+# pymysql.version_info = (1, 4, 6, 'final', 0)
+# pymysql.install_as_MySQLdb()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -47,7 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'unifiedfugitivedatabase',
+    'django_extensions',
+    'UnifiedFugitiveDatabase',
 ]
 
 
@@ -87,15 +87,12 @@ TEMPLATES = [
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'fugitive_profiles_db',
-        'USER': 'root',
-        'PASSWORD': 'zulu02;',
+        'NAME': 'FugitiveProfilesDatabase',
+        'USER': 'django',
+        'PASSWORD': 'omega02;',
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -137,7 +134,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [ os.path.join(BASE_DIR,'unifiedfugitivedatabase/') ]
+STATICFILES_DIRS = [ os.path.join(BASE_DIR,'UnifiedFugitiveDatabase/') ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 
 # Default primary key field type

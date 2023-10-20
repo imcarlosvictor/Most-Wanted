@@ -1,8 +1,8 @@
-rom django.urls import path
+from django.urls import path
 
 from . import views
 
-app_name = 'unifiedfugitivedatabase'
+app_name = 'UnifiedFugitiveDatabase'
 urlpatterns = [
     path('', views.search, name='search'),
     path('database/', views.database, name='database'),

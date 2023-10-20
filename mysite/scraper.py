@@ -1,16 +1,16 @@
 import os
 import json
 import csv
-import pandas as pd
 import httpx
 import requests
-import country_converter
+import pandas as pd
+import country_converter as coco
 from selectolax.parser import HTMLParser
 from deep_translator import GoogleTranslator
 
 
 DIRECTORY_PATH = os.path.abspath(os.path.dirname(__file__))
-RAW_PROFILE_EXTRACT_CSV = os.path.abspath(os.path.join(DIRECTORY_PATH, './raw_profile_extracts.csv'))
+RAW_PROFILE_EXTRACT_CSV = os.path.abspath(os.path.join(DIRECTORY_PATH, './data_extracts/raw_profile_extracts.csv'))
 
 
 class RcmpScraper:
@@ -139,10 +139,18 @@ class RcmpScraper:
     def clean_data(self, profile_val):
         # --------------- HEIGHT ---------------
         height_in_cm_reversed  = profile_val[3][-1:-6:-1]
-        profile_val[3] = height_in_cm_reversed[::-1]
+        profile_val[3] = height_in_cm_reversed[-1:1:-1]
+        if profile_val[3] != '':
+            profile_val[3] = int(profile_val[3]) # INT field
+        else:
+            profile_val[3] = 0
 
         # --------------- WEIGHT ---------------
-        profile_val[4] = profile_val[4][7:]
+        profile_val[4] = profile_val[4][7:-2]
+        if profile_val[4] != '':
+            profile_val[4] = int(profile_val[4]) # INT field
+        else:
+            profile_val[4] = 0
 
         # --------------- DATE OF BIRTH ---------------
         pos = len(profile_val[9]) - 4
@@ -155,14 +163,14 @@ class RcmpScraper:
 
     def save_to_csv(self, profile_data):
         with open(RAW_PROFILE_EXTRACT_CSV, 'a', newline='') as file:
-            writer = csv.writer(file)
+            writer = csv.writer(file, delimiter=',')
             writer.writerow(profile_data)
 
 
 class FbiScraper:
     def save_to_csv(self, profile_data):
         with open(RAW_PROFILE_EXTRACT_CSV, 'a', newline='') as file:
-            writer = csv.writer(file)
+            writer = csv.writer(file, delimiter=',')
             writer.writerow(profile_data)
 
     def extract_profile_data(self):
@@ -335,20 +343,22 @@ class InterpolScraper:
             profile_val[2] = 'Female'
 
         # --------------- HEIGHT ---------------
-        # Add and extra 0 if necessary and unit of measurement (cm)
         if profile_val[3]:
             height = str(profile_val[3]).replace('.','')
             if len(height) == 2:
-                height += '0cm'
-            elif len(height) > 2:
-                height += 'cm'
-            profile_val[3] = height
+                height += '0'
+        # Convert to INT
+        if profile_val[3] != '':
+            profile_val[3] = int(height)
+        else:
+            profile_val[3] = 0
 
         # --------------- WEIGHT ---------------
-        # Add unit of measurement
-        if profile_val[4]:
-            weight = str(profile_val[4])
-            profile_val[4] = weight + 'kg'
+        # Convert to INT
+        if profile_val[4] != '':
+            profile_val[4] = int(profile_val[4])
+        else:
+            profile_val[4] = 0
 
         # --------------- EYES ---------------
         if 'BLA' in profile_val[5]:
@@ -378,25 +388,51 @@ class InterpolScraper:
         else:
             profile_val[6] = ''
 
+        # --------------- NATIONALITY ---------------
+        country_name_list = []
+        for country_code in profile_val[8]:
+            country = coco.convert(names=country_code, to='name_short')
+            country_name_list.append(country)
+        profile_val[8] = ', '.join(country_name_list)
+
+        try:
+            # --------------- DISTINGUISHING MARKS ---------------
+            if profile_val[7]:
+                # --------------- PLACE OF BIRTH ---------------
+                value_to_translate = profile_val[7]
+                profile_val[7] = GoogleTranslator(source='auto', target='english').translate(value_to_translate)
+
+            # --------------- PLACE OF BIRTH ---------------
+            if profile_val[10]:
+                value_to_translate = profile_val[10]
+                profile_val[10] = GoogleTranslator(source='auto', target='english').translate(value_to_translate)
+
+            # --------------- CHARGES ---------------
+            if profile_val[11]:
+                value_to_translate = profile_val[11]
+                profile_val[11] = GoogleTranslator(source='auto', target='english').translate(value_to_translate)
+        except:
+            print('No description to translate')
+
         # --------------- WANTED BY ---------------
-        # TODO: ISO 3166 country code ('CA') to country name ('canada')
-        profile_val[12] = country_converter.convert(names=profile_val[12], to='name_short')
+        countries = profile_val[12].replace('[','')
+        countries = countries.replace(']','')
+        country_code_list = countries.split(',')
 
-        # --------------- PLACE OF BIRTH ---------------
-        value_to_translate = profile_val[10]
-        profile_val[10] = GoogleTranslator(source='auto', target='english').translate(value_to_translate)
+        country_name_list = []
+        for country_code in country_code_list:
+            country = coco.convert(names=country_code, to='name_short')
+            country_name_list.append(country)
+        profile_val[12] = ', '.join(country_name_list)
 
-        # --------------- CHARGES ---------------
-        value_to_translate = profile_val[11]
-        profile_val[11] = GoogleTranslator(source='auto', target='english').translate(value_to_translate)
-
+        # Lower case all values
         for i in range(0, len(profile_val) - 2):
             if type(profile_val[i]) == str:
                 profile_val[i] = profile_val[i].lower()
 
     def save_to_csv(self, profile_data):
         with open(RAW_PROFILE_EXTRACT_CSV, 'a', newline='') as file:
-            writer = csv.writer(file)
+            writer = csv.writer(file, delimiter=',')
             writer.writerow(profile_data)
 
 
@@ -473,6 +509,38 @@ class TorontoPeelPoliceScraper:
 
 
 def main():
+
+    csv_header_list = [
+        'Name',
+        'Alias',
+        'Sex',
+        'Height (cm)',
+        'Weight (kg)',
+        'Eyes',
+        'Hair',
+        'Distinguishing Marks',
+        'Nationality',
+        'Date of Birth',
+        'Place of Birth',
+        'Charges',
+        'Wanted By',
+        'Status',
+        'Publication',
+        'Last Modified',
+        'Reward',
+        'Details',
+        'Caution',
+        'Remarks',
+        'Images',
+        'Link',
+    ]
+
+    # open CSV and assign headers
+    with open(RAW_PROFILE_EXTRACT_CSV, 'w') as file:
+        dw = csv.DictWriter(file, delimiter=',', fieldnames=csv_header_list)
+        dw.writeheader()
+
+    # create scrapers
     rcmp = RcmpScraper()
     fbi = FbiScraper()
     interpol = InterpolScraper()

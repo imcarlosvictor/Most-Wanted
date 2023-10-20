@@ -17,13 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
-from unifiedfugitivedatabase import views
+from UnifiedFugitiveDatabase import views
 
 router = routers.DefaultRouter()
 router.register(r'records', views.FugitiveProfilesView, 'fugitive_profiles')
 
 urlpatterns = [
-    path('', include('unifiedfugitivedatabase.urls')),
+    path('', include('UnifiedFugitiveDatabase.urls')),
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
 ]
