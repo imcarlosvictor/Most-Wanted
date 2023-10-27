@@ -26,8 +26,8 @@ def records(request):
 def analytics(request):
     return render(request, 'analytics.html')
 
-def map(request):
-    return render(request, 'choropleth.html')
+# def map(request):
+#     return render(request, 'choropleth.html')
 
 def about(request):
     return render(request, 'about.html')

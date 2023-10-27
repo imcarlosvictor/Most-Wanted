@@ -20,7 +20,7 @@ function App(props) {
         <Route path="/about" element={<About/>}/>
         <Route path="/database" element={<Database/>}/>
         <Route path="/analytics" element={<Analytics/>}/>
-        <Route path="/map" element={<Map/>}/>
+        {/* <Route path="/map" element={<Map/>}/> */}
       </Routes>
     </BrowserRouter>
   )
