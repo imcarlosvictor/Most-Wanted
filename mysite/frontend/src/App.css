@@ -1,13 +1,10 @@
 :root {
 	--black: #0a0a0a;
-	/* --black: #0c1015; */
-	--black: #0D0D0D;
+	/* --black: #0D0D0D; */
 	--darkgrey: #121212;
-	/* --greengrey: #212929; */
 	--greengrey: #303c3c;
-	/* --white: #d9d5d0; */
-	/* --white: #e5e3e2; */
-	--white: #d3d7cf;
+	/* --white: #d3d7cf; */
+	--white: #f3f6fb;
 	--red: #ff0044;
 	--orange: #ff9f00;
 }
@@ -110,8 +107,6 @@ body {
 
 
 
-
-
 /* ##################################################################### */
 /* ABOUT PAGE */
 /* ##################################################################### */
@@ -144,4 +139,49 @@ body {
 .sources li a:hover {
 	font-style: bold;
 	text-decoration: underline;
+}
+
+/* ##################################################################### */
+/* DATABASE PAGE */
+/* ##################################################################### */
+.compiled-profile-database {
+	margin-top: 3em;
+	padding-left: 10em;
+	width: 100%;
+}
+
+.compiled-profile-database #profile-entry-header p, .profile-entry .profile-entry-details {
+	text-transform: uppercase;
+	font-weight: bold;
+	/* font-size: 13px; */
+}
+
+#profile-entry-header {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	background-color: var(--white);
+	color: var(--black);
+	padding: 0.3em 5em;
+	border-bottom: 1px solid var(--black);
+}
+
+.profile-entry {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	padding: .5em 5em;
+	background-color: #1f1f1f;
+	font-size: 14px;
+}
+
+.profile-entry:nth-child(2n) {
+	background-color: #252525;
+}
+
+.profile-entry:hover {
+	background-color: rgba(243,246,251,.85);
+	color: var(--black);
+}
+
+.status-value {
+	color: var(--red);
 }

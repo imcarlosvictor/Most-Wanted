@@ -20,7 +20,7 @@ from rest_framework import routers
 from UnifiedFugitiveDatabase import views
 
 router = routers.DefaultRouter()
-router.register(r'records', views.FugitiveProfilesView, 'fugitive_profiles')
+router.register(r'profiles', views.FugitiveProfilesView, 'fugitive_profiles')
 
 urlpatterns = [
     path('', include('UnifiedFugitiveDatabase.urls')),

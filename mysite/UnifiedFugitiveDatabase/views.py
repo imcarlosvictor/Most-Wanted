@@ -5,11 +5,11 @@ from rest_framework import viewsets
 from .serializers import FugitiveProfilesSerializer
 from .models import FugitiveProfiles
 
+
+
 class FugitiveProfilesView(viewsets.ModelViewSet):
     serializer_class = FugitiveProfilesSerializer
     queryset = FugitiveProfiles.objects.all()
-
-
 
 # Create your views here.
 def search(request):

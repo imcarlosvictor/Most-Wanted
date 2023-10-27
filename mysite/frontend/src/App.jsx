@@ -1,6 +1,7 @@
-import React from 'react';
-import render from 'react-dom';
+import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import axios from 'axios';
+import render from 'react-dom';
 import Navbar from './components/NavBar';
 import Search from './components/Search'
 import About from './components/About'
