@@ -20,23 +20,25 @@ export default function Database() {
 
   const createProfileCard = () => {
     return (
-      <div className="compiled-profile-database">
+      <div className="database-content">
         <div id="profile-entry-header">
           <p id="profile-entry-header-details">name</p>
           <p id="profile-entry-header-details">sex</p>
           <p id="profile-entry-header-details">status</p>
           <p id="profile-entry-header-details">charges</p>
         </div>
-        {profileInfo.map(profile => {
-          return (
-            <div className="profile-entry" key={profile.id}>
-              <p className="profile-entry-details">{profile.name}</p>
-              <p className="profile-entry-details">{profile.sex}</p>
-              <p className="profile-entry-details"><span className="status-value">{profile.status}</span></p>
-              <p className="profile-entry-details">{profile.charges}</p>
-            </div>
-          )
-        })}
+        <table className="compiled-profile-database">
+          {profileInfo.map(profile => {
+            return (
+              <tr className="profile-entry" key={profile.id}>
+                <td className="profile-entry-details">{profile.name}</td>
+                <td className="profile-entry-details">{profile.sex}</td>
+                <td className="profile-entry-details"><span className="status-value">{profile.status}</span></td>
+                <td className="profile-entry-details">{profile.charges}</td>
+              </tr>
+            )
+          })}
+        </table>
       </div>
     )
   }
@@ -47,7 +49,6 @@ export default function Database() {
 
   return (
     <>
-      <h2>Database</h2>
       {createProfileCard()}
     </>
   );

@@ -14,6 +14,7 @@
 	padding: 0;
 	box-sizing: border-box;
 	font-family: 'Hanken Grotesk', sans-serif;
+	overflow-x: hidden;
 }
 
 input {
@@ -56,6 +57,9 @@ body {
   'GRAD' 0,
   'opsz' 24
 }
+
+
+
 /* ##################################################################### */
 /* LANDING PAGE */
 /* ##################################################################### */
@@ -144,16 +148,27 @@ body {
 /* ##################################################################### */
 /* DATABASE PAGE */
 /* ##################################################################### */
-.compiled-profile-database {
+.database-content {
 	margin-top: 3em;
-	padding-left: 10em;
+	padding-left: 9em;
+	padding-right: 5em;
 	width: 100%;
+	height: 90vh;
 }
 
-.compiled-profile-database #profile-entry-header p, .profile-entry .profile-entry-details {
+.compiled-profile-database {
+	display: block;
+	overflow: auto;
+	height: 100%;
+}
+
+.database-content::-webkit-scrollbar, .compiled-profile-database::-webkit-scrollbar {
+	display: none;
+}
+
+#profile-entry-header p, .profile-entry .profile-entry-details {
 	text-transform: uppercase;
 	font-weight: bold;
-	/* font-size: 13px; */
 }
 
 #profile-entry-header {
@@ -168,12 +183,12 @@ body {
 .profile-entry {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
-	padding: .5em 5em;
+	padding: .7em 5em;
 	background-color: #1f1f1f;
 	font-size: 14px;
 }
 
-.profile-entry:nth-child(2n) {
+.profile-entry:nth-child(even) {
 	background-color: #252525;
 }
 
