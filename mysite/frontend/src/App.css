@@ -145,6 +145,7 @@ body {
 	text-decoration: underline;
 }
 
+
 /* ##################################################################### */
 /* DATABASE PAGE */
 /* ##################################################################### */
@@ -166,32 +167,41 @@ body {
 	display: none;
 }
 
-#profile-entry-header p, .profile-entry .profile-entry-details {
+#profile-entry-header button, .profile-entry .profile-entry-details {
 	text-transform: uppercase;
 	font-weight: bold;
+	text-align: left;
 }
 
 #profile-entry-header {
 	display: grid;
 	/* grid-template-columns: repeat(7, 1fr); */
-	grid-template-columns: .5fr 1fr 1fr 1fr 1fr 1fr 1fr;
+	grid-template-columns: .4fr 1fr 1fr 1fr 1fr 1fr 1fr;
 	background-color: var(--white);
 	color: var(--black);
 	border-bottom: 1px solid var(--black);
 }
 
-#profile-entry-header-details {
+.table-column {
 	border: .2px solid var(--darkgrey);
 	padding: .5em 0 .5em 1em;
 }
 
+.caret {
+	margin-left: .7em;
+}
+
+.profile-entry-link {
+	display: grid;
+	grid-template-columns: .4fr 1fr 1fr 1fr 1fr 1fr 1fr;
+	cursor: pointer;
+}
 
 .profile-entry {
-	display: grid;
+	/* display: grid; */
 	/* grid-template-columns: repeat(7, 1fr); */
-	grid-template-columns: .5fr 1fr 1fr 1fr 1fr 1fr 1fr;
+	/* grid-template-columns: .4fr 1fr 1fr 1fr 1fr 1fr 1fr; */
 	background-color: var(--white);
-	/* padding: .7em 5em; */
 	background-color: #1f1f1f;
 	font-size: 14px;
 	border: .2px solid var(--darkgrey);
@@ -201,12 +211,12 @@ body {
 	background-color: #252525;
 }
 
-.profile-entry:hover {
+.profile-entry:hover td {
 	background-color: rgba(243,246,251,.85);
 	color: var(--black);
 }
 
-.profile-entry-header-details, .profile-entry-details {
+.table-column, .profile-entry-details {
 	padding-left: .5em;
 	padding-right: 2em;
 }
@@ -215,6 +225,7 @@ body {
 	border-left: .1px solid var(--darkgrey);
 	border-right: .1px solid var(--darkgrey);
 	padding: .7em;
+	color: var(--white);
 }
 
 .status-value {
