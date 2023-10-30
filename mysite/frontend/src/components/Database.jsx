@@ -32,128 +32,121 @@ export default function Database() {
           <button id="wanted_by" className="table-column profile-entry-header-buttons" onClick={toggleArrow}>wanted by<i className="caret"></i></button>
         </div>
         <table className="compiled-profile-database">
-          {profileInfo.map(profile => {
-            let sex_classname = "profile-entry-details";
-            profile.sex == "male" ? sex_classname += " male" : sex_classname += " female";
+          <tbody id="table-body">
+            {profileInfo.map(profile => {
+              let sex_classname = "profile-entry-details";
+              profile.sex == "male" ? sex_classname += " male" : sex_classname += " female";
 
-            let wanted_by_classname = "profile-entry-details";
-            if (profile.wanted_by) {
-              wanted_by_classname += " " + profile.wanted_by;
-            }
-
-            let charges_classname = "profile-entry-details";
-            const text = profile.charges.split(" ");
-            for (let i = 0; i < text.length; i++) {
-              switch(text[i].toLowerCase()) {
-                case "murder":
-                  charges_classname += " murder";
-                  break;
-                case "homicide":
-                  charges_classname += " murder";
-                  break;
-                case "rape":
-                  charges_classname += " sex rape";
-                  break;
-                case "abduction":
-                  charges_classname += " abduction";
-                  break;
-                case "terrorist":
-                  charges_classname += " terrorist";
-                  break;
-                case "parole":
-                  charges_classname += " parole";
-                  break;
-                case "driving":
-                  charges_classname += " driving";
-                  break;
-                case "road":
-                  charges_classname += " driving";
-                  break;
-                case "trafficking":
-                  charges_classname += " trafficking";
-                  break;
-                case "sexual":
-                  charges_classname += " sex";
-                  break;
-                case "drug":
-                  charges_classname += " substance";
-                  break;
-                case "narcotic":
-                  charges_classname += " substance";
-                  break;
-                case "substance":
-                  charges_classname += " substance";
-                  break;
-                case "fraud":
-                  charges_classname += " fraud";
-                  break;
-                case "femicide":
-                  charges_classname += " femicide";
-                  break;
-                case "child":
-                  charges_classname += " child minor";
-                  break;
-                case "minor":
-                  charges_classname += " child minor";
-                  break;
-                case "teenage":
-                  charges_classname += " child minor";
-                  break;
-                case "crime":
-                  charges_classname += " crime";
-                  break;
-                case "gang":
-                  charges_classname += " crime";
-                  break;
-                case "firearm":
-                  charges_classname += " firearm ammunition";
-                  break;
-                case "scam":
-                  charges_classname += " scam";
-                  break;
-                case "robbery":
-                  charges_classname += " robbery";
-                  break;
-                case "extortion":
-                  charges_classname += " extortion";
-                  break;
-                case "infanticide":
-                  charges_classname += " murder infanticide";
-                  break;
-                case "threats":
-                  charges_classname += " threats";
-                  break;
+              let wanted_by_classname = "profile-entry-details";
+              if (profile.wanted_by) {
+                wanted_by_classname += " " + profile.wanted_by;
               }
-            }
 
-            <tbody className="table-content"></tbody>
-            return (
-              <tr className="profile-entry" key={profile.id}>
-                <link to="/" key={profile.id} className="profile-entry-link">
-                <td className="profile-entry-details">{profile.id}</td>
-                <td className="profile-entry-details">{profile.name}</td>
-                <td className="profile-entry-details">{profile.alias}</td>
-                <td className={sex_classname}>{profile.sex}</td>
-                <td className={charges_classname}>{profile.charges}</td>
-                <td className="profile-entry-details"><span className="status-value">{profile.status}</span></td>
-                <td className={wanted_by_classname}>{profile.wanted_by}</td>
-                </link>
-              </tr>
-            )
-          })}
+              let charges_classname = "profile-entry-details";
+              const text = profile.charges.split(" ");
+              for (let i = 0; i < text.length; i++) {
+                switch(text[i].toLowerCase()) {
+                  case "murder":
+                    charges_classname += " murder";
+                    break;
+                  case "homicide":
+                    charges_classname += " murder";
+                    break;
+                  case "rape":
+                    charges_classname += " sex rape";
+                    break;
+                  case "abduction":
+                    charges_classname += " abduction";
+                    break;
+                  case "terrorist":
+                    charges_classname += " terrorist";
+                    break;
+                  case "parole":
+                    charges_classname += " parole";
+                    break;
+                  case "driving":
+                    charges_classname += " driving";
+                    break;
+                  case "road":
+                    charges_classname += " driving";
+                    break;
+                  case "trafficking":
+                    charges_classname += " trafficking";
+                    break;
+                  case "sexual":
+                    charges_classname += " sex";
+                    break;
+                  case "drug":
+                    charges_classname += " substance";
+                    break;
+                  case "narcotic":
+                    charges_classname += " substance";
+                    break;
+                  case "substance":
+                    charges_classname += " substance";
+                    break;
+                  case "fraud":
+                    charges_classname += " fraud";
+                    break;
+                  case "femicide":
+                    charges_classname += " femicide";
+                    break;
+                  case "child":
+                    charges_classname += " child minor";
+                    break;
+                  case "minor":
+                    charges_classname += " child minor";
+                    break;
+                  case "teenage":
+                    charges_classname += " child minor";
+                    break;
+                  case "crime":
+                    charges_classname += " crime";
+                    break;
+                  case "gang":
+                    charges_classname += " crime";
+                    break;
+                  case "firearm":
+                    charges_classname += " firearm ammunition";
+                    break;
+                  case "scam":
+                    charges_classname += " scam";
+                    break;
+                  case "robbery":
+                    charges_classname += " robbery";
+                    break;
+                  case "extortion":
+                    charges_classname += " extortion";
+                    break;
+                  case "infanticide":
+                    charges_classname += " murder infanticide";
+                    break;
+                  case "threats":
+                    charges_classname += " threats";
+                    break;
+                }
+              }
+
+              return (
+                <tr className="profile-entry" key={profile.id}>
+                  <td className="profile-entry-details">{profile.id}</td>
+                  <td className="profile-entry-details">{profile.name}</td>
+                  <td className="profile-entry-details">{profile.alias}</td>
+                  <td className={sex_classname}>{profile.sex}</td>
+                  <td className={charges_classname}>{profile.charges}</td>
+                  <td className="profile-entry-details"><span className="status-value">{profile.status}</span></td>
+                  <td className={wanted_by_classname}>{profile.wanted_by}</td>
+                </tr>
+              )
+            })}
+          </tbody>
         </table>
       </div>
     )
   }
 
   // filter
-  let table = document.getElementsByClassName("table-content");
   // let input = document.getElementsByClassName("compiled-profile-database");
-  let id_btn = document.getElementById("id");
-  let name_btn = document.getElementById("name");
-  let alias_btn = document.getElementById("alias");
-  // let id_btn = document.getElementById("id");
-  // let id_btn = document.getElementById("id");
   var caretUpClassName = 'fa fa-caret-up';
   var caretDownClassName = 'fa fa-caret-down';
 
@@ -203,7 +196,6 @@ export default function Database() {
       reverse = true;
       console.log(reverse);
     }
-    console.log(iconClassName);
 
     // order list
     for ( let i = 0; i < profileInfo.length; i++ ) {
@@ -214,41 +206,39 @@ export default function Database() {
   }
 
   function populateTable() {
+    let table = document.getElementById("table-body");
     table.innerHTML = '';
-    for (let profile of profileInfo) {
-      // let row = table.insertRow(-1);
+    for (let profileData of profileInfo) {
+      let row = table.insertRow(-1);
 
-      // let id = row.insertCell(0);
-      // id.innerHTML = data.id;
+      let id = row.insertCell(0);
+      id.innerHTML = profileData.id;
+      id.className = "profile-entry-details";
+      console.log(id.className);
 
-      // let name = row.insertCell(1);
-      // name.innerHTML = data.name;
+      let name = row.insertCell(1);
+      name.innerHTML = profileData.name;
+      name.className = "profile-entry-details";
 
-      // let alias = row.insertCell(2);
-      // alias.innerHTML = data.alias;
+      let alias = row.insertCell(2);
+      alias.innerHTML = profileData.alias;
+      alias.className = "profile-entry-details";
 
-      // let sex = row.insertCell(3);
-      // sex.innerHTML = data.sex;
+      let sex = row.insertCell(3);
+      sex.innerHTML = profileData.sex;
+      sex.className = "profile-entry-details";
 
-      // let charges = row.insertCell(4);
-      // charges.innerHTML = data.charges;
+      let charges = row.insertCell(4);
+      charges.innerHTML = profileData.charges;
+      charges.className = "profile-entry-details";
 
-      // let status = row.insertCell(5);
-      // status.innerHTML = data.status;
+      let status = row.insertCell(5);
+      status.innerHTML = profileData.status;
+      status.className = "profile-entry-details";
 
-      // let wanted_by = row.insertCell(6);
-      // wanted_by.innerHTML = data.wanted_by;
-      <tr className="profile-entry" key={profile.id}>
-        <link to="/" key={profile.id} className="profile-entry-link">
-        <td className="profile-entry-details">{profile.id}</td>
-        <td className="profile-entry-details">{profile.name}</td>
-        <td className="profile-entry-details">{profile.alias}</td>
-        <td className="profile-entry-details">{profile.sex}</td>
-        <td className="profile-entry-details">{profile.charges}</td>
-        <td className="profile-entry-details"><span className="status-value">{profile.status}</span></td>
-        <td className="profile-entry-details">{profile.wanted_by}</td>
-        </link>
-      </tr>
+      let wanted_by = row.insertCell(6);
+      wanted_by.innerHTML = profileData.wanted_by;
+      wanted_by.className = "profile-entry-details";
     }
     filterTable();
   }

@@ -159,12 +159,20 @@ body {
 
 .compiled-profile-database {
 	display: block;
+	/* display: grid; */
 	overflow: auto;
 	height: 100%;
+	padding: 0;
 }
 
 .database-content::-webkit-scrollbar, .compiled-profile-database::-webkit-scrollbar {
 	display: none;
+}
+
+#table-body {
+ width: 100%;
+ height: 100%;
+ overflow: hidden;
 }
 
 #profile-entry-header button, .profile-entry .profile-entry-details {
@@ -175,11 +183,12 @@ body {
 
 #profile-entry-header {
 	display: grid;
-	/* grid-template-columns: repeat(7, 1fr); */
 	grid-template-columns: .4fr 1fr 1fr 1fr 1fr 1fr 1fr;
-	background-color: var(--white);
+	width: 100%;
 	color: var(--black);
 	border-bottom: 1px solid var(--black);
+	margin-left: .01em;
+	padding: .1em;
 }
 
 .table-column {
@@ -198,13 +207,14 @@ body {
 }
 
 .profile-entry {
-	/* display: grid; */
-	/* grid-template-columns: repeat(7, 1fr); */
-	/* grid-template-columns: .4fr 1fr 1fr 1fr 1fr 1fr 1fr; */
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	grid-template-columns: .4fr 1fr 1fr 1fr 1fr 1fr 1fr;
 	background-color: var(--white);
 	background-color: #1f1f1f;
 	font-size: 14px;
 	border: .2px solid var(--darkgrey);
+	padding: 0;
 }
 
 .profile-entry:nth-child(even) {
