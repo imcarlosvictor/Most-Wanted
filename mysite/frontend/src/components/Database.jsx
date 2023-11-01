@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import profiles from '../api/profiles'
+import profiles from '../api/profiles';
 
 
 
@@ -19,7 +19,7 @@ export default function Database() {
     }
   }
 
-  const createProfileCard = () => {
+  const createProfileTable = () => {
     return (
       <div className="database-content">
         <div id="profile-entry-header">
@@ -214,7 +214,6 @@ export default function Database() {
       let id = row.insertCell(0);
       id.innerHTML = profileData.id;
       id.className = "profile-entry-details";
-      console.log(id.className);
 
       let name = row.insertCell(1);
       name.innerHTML = profileData.name;
@@ -291,7 +290,7 @@ export default function Database() {
 
   return (
     <>
-      {createProfileCard()}
+      {createProfileTable()}
     </>
   );
 }
