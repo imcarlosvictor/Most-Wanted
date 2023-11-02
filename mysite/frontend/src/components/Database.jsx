@@ -13,7 +13,6 @@ export default function Database() {
     try {
       const response = await profiles.get('/profiles/')
       setProfileInfo(response.data)
-      // console.log(response)
     } catch (error) {
       console.log(error);
     }
@@ -174,6 +173,7 @@ export default function Database() {
   }
 
   function toggleArrow(event) {
+    event.stopPropagation();
     let element = event.target;
     let caret, field, reverse;
     if (element.tagName === 'BUTTON') {
@@ -239,50 +239,7 @@ export default function Database() {
       wanted_by.innerHTML = profileData.wanted_by;
       wanted_by.className = "profile-entry-details";
     }
-    filterTable();
   }
-
-  function filterTable() {
-    let filter = input.value.toUpperCase();
-    let rows = table.getElementsByTagName("TR");
-    let flag = false;
-
-    for (let row of rows) {
-      let cells = row.getElementsByTagName("TD");
-      for (let cell of cells) {
-        if (cell.textContent.toUpperCase().indexOf(filter) > -1) {
-          if (filter) {
-            cell.style.backgroundColor = 'yellow';
-          } else {
-            cell.style.backgroundColor = '';
-          }
-
-          flag = true;
-        } else {
-          cell.style.backgroundColor = '';
-        }
-      }
-
-      if (flag) {
-        row.style.display = "";
-      } else {
-        row.style.display = "none";
-      }
-
-      flag = false;
-    }
-  }
-
-  // let tableColumns = document.getElementsByClassName('table-column');
-  // for (let column of tableColumns) {
-  //   column.addEventListener('click', function(event) {
-  //     toggleArrow(event);
-  //   });
-  // }
-
-  // input.addEventListener('keyup', function(event) {
-  // filterTable();
-  // });
 
   useEffect( () => {
     fetchProfiles();
