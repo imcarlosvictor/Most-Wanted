@@ -1,7 +1,5 @@
-import React from 'react';
-import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import profiles from '../api/profiles';
 
 
@@ -127,7 +125,8 @@ export default function Database() {
               }
 
               return (
-                <tr className="profile-entry" key={profile.id}>
+                <Link key={profile.id} to={"/details/" + profile.id} state={{ data:profileInfo }}>
+                <tr className="profile-entry">
                   <td className="profile-entry-details">{profile.id}</td>
                   <td className="profile-entry-details">{profile.name}</td>
                   <td className="profile-entry-details">{profile.alias}</td>
@@ -136,6 +135,7 @@ export default function Database() {
                   <td className="profile-entry-details"><span className="status-value">{profile.status}</span></td>
                   <td className={wanted_by_classname}>{profile.wanted_by}</td>
                 </tr>
+                </Link>
               )
             })}
           </tbody>
@@ -205,39 +205,69 @@ export default function Database() {
     populateTable();
   }
 
+
   function populateTable() {
     let table = document.getElementById("table-body");
     table.innerHTML = '';
+
+    // Fill rows with profile data
     for (let profileData of profileInfo) {
       let row = table.insertRow(-1);
+      row.className = "profile-entry-details";
+      let tableData = document.createElement("td")
 
-      let id = row.insertCell(0);
-      id.innerHTML = profileData.id;
-      id.className = "profile-entry-details";
 
-      let name = row.insertCell(1);
-      name.innerHTML = profileData.name;
-      name.className = "profile-entry-details";
+      let pathname = "/details/" + profileData.id
+      let link_parameters = `pathname:${pathname}, state:${profileData}`
+      tableData.innerHTML = `
+      <Link to={${link_parameters}}>
+      <td className="id">${profileData.id}</td>
+      <td className="name">${profileData.name}</td>
+      <td className="alias">${profileData.alias}</td>
+      <td className="sex">${profileData.sex}</td>
+      <td className="charges">${profileData.charges}</td>
+      <td className="status">${profileData.status}</td>
+      <td className="wanted_by">${profileData.wanted_by}</td>
+      </Link>
+      `
+      row.appendChild(tableData);
 
-      let alias = row.insertCell(2);
-      alias.innerHTML = profileData.alias;
-      alias.className = "profile-entry-details";
+      // let table_row_btn = document.createElement("button");
+      // table_row_btn.className = "profile-entry-btn"
+      // table_row_btn.setAttribute("onclick", print);
 
-      let sex = row.insertCell(3);
-      sex.innerHTML = profileData.sex;
-      sex.className = "profile-entry-details";
+      // let row = table.insertRow(-1);
+      // row.className = "profile-entry-details";
+      // row.addEventListener("event", print)
 
-      let charges = row.insertCell(4);
-      charges.innerHTML = profileData.charges;
-      charges.className = "profile-entry-details";
+      // let id = row.insertCell(0);
+      // id.innerHTML = profileData.id;
+      // id.className = "id";
 
-      let status = row.insertCell(5);
-      status.innerHTML = profileData.status;
-      status.className = "profile-entry-details";
+      // let name = row.insertCell(1);
+      // name.innerHTML = profileData.name;
+      // name.className = "name";
 
-      let wanted_by = row.insertCell(6);
-      wanted_by.innerHTML = profileData.wanted_by;
-      wanted_by.className = "profile-entry-details";
+      // let alias = row.insertCell(2);
+      // alias.innerHTML = profileData.alias;
+      // alias.className = "alias";
+
+      // let sex = row.insertCell(3);
+      // sex.innerHTML = profileData.sex;
+      // sex.className = "sex";
+
+      // let charges = row.insertCell(4);
+      // charges.innerHTML = profileData.charges;
+      // charges.className = "charges";
+
+      // let status = row.insertCell(5);
+      // status.innerHTML = profileData.status;
+      // status.className = "status";
+
+      // let wanted_by = row.insertCell(6);
+      // wanted_by.innerHTML = profileData.wanted_by;
+      // wanted_by.className = "wanted_by";
+
     }
   }
 

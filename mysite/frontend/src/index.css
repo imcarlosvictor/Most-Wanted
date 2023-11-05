@@ -2,9 +2,8 @@
 	position: fixed;
 	top: 0;
 	left: 0;
-	width: 7%;
+	width: 15%;
 	height: 100%;
-	/* background-color: pink; */
 }
 
 .navigation-list {
@@ -37,14 +36,11 @@ a:-webkit-any-link {
 .navlink-btn {
 	text-transform: uppercase;
 	text-decoration: none;
-	/* font-weight: bold; */
 	font-size: 15px;
-	color: var(--black);
 	padding-left: .5em;
 	padding-right: .5em;
 }
 
 .navigation-buttons li:hover {
 	opacity: 0.8;
-	/* background: var(--white); */
 }

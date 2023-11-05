@@ -7,7 +7,8 @@ import Search from './components/Search';
 import About from './components/About';
 import Database from './components/Database';
 import Analytics from './components/Analytics';
-import Map from './components/Map';
+import Profile from './components/Profile';
+import Error from './components/Error';
 import './App.css';
 
 
@@ -21,11 +22,13 @@ export default function App() {
           <Route path="/about" element={<About/>}/>
           <Route path="/database" element={<Database/>}/>
           <Route path="/analytics" element={<Analytics/>}/>
-          {/* <Route path="/map" element={<Map/>}/> */}
+          <Route exact path="/details/:profileID" element={<Profile />}/>
+          <Route path="*" element={<Error />}/>
         </Routes>
       </BrowserRouter>
     )
   }
+
   return (
     <>
       {createRouter()}

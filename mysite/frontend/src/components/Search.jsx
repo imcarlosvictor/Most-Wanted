@@ -89,7 +89,6 @@ export default function Search() {
     // Search bar event listener 
     input.addEventListener("keyup", function(event) {
       event.stopImmediatePropagation(); // Prevent event bubbling
-      // event.stopPropagation();
       if (event.keyCode == 13) {
         // Check if user hit ENTER Key
         let profileID = filterTable();
