@@ -1,7 +1,8 @@
 :root {
 	/* --black: #0a0a0a; */
-	--black: #101115;
-	--darkgrey: #121212;
+	/* --black: #101115; */
+	--black: #0a0a0a;
+	--darkgrey: #212020;
 	--frostblack: rgba(24,26,27,.85);
 	--greengrey: #303c3c;
 	--white: #acacbc;
@@ -37,7 +38,6 @@ body {
 	padding: 0;
 	background: var(--black);
 	color: var(--white);
-
 }
 
 .material-symbols-outlined {
@@ -57,20 +57,44 @@ body {
 /* LANDING PAGE */
 /* ##################################################################### */
 .content {
-	/* position: absolute; */
-	/* top: 50%; */
-	/* left: 50%; */
-	/* transform: translate(-50%, -50%); */
-	/* display: block; */
-	/* border: 1px solid red; */
 	padding: 1em;
+}
+
+.noise-bg {
+	position: fixed;
+  top: -50%;
+  left: -50%;
+  right: -50%;
+  bottom: -50%;
+  width: 200%;
+  height: 200vh;
+  background: transparent url('http://assets.iceable.com/img/noise-transparent.png') repeat 0 0;
+  background-repeat: repeat;
+  animation: bg-animation .3s infinite;
+  opacity: .9;
+  visibility: visible;
+	z-index: -1;
+}
+
+@keyframes bg-animation {
+	0% { transform: translate(0,0) }
+	10% { transform: translate(-5%,-5%) }
+	20% { transform: translate(-10%,5%) }
+	30% { transform: translate(5%,-10%) }
+	40% { transform: translate(-5%,15%) }
+	50% { transform: translate(-10%,5%) }
+	60% { transform: translate(15%,0) }
+	70% { transform: translate(0,10%) }
+	80% { transform: translate(-15%,0) }
+	90% { transform: translate(10%,5%) }
+	100% { transform: translate(5%,0) }
 }
 
 .form-field {
 	background: none;
-	/* border: none; */
 	border-radius: .5px;
 	border: 1px solid var(--white);
+	border: none;
 }
 
 .material-symbols-outlined {
@@ -91,7 +115,7 @@ body {
 	margin-bottom: .5em;
 	/* border-bottom: 2px solid var(--white); */
 	padding-left: 2.7em;
-	background: var(--black);
+	background: var(--frostblack);
 }
 
 #search-bar:focus {
@@ -100,9 +124,6 @@ body {
   /* border-bottom: 2px solid white; */
 	/* caret-style: block; */
 }
-
-
-
 
 
 
@@ -128,6 +149,7 @@ body {
   padding: .8em .8em .8em 1.5em;
   margin-bottom: .5em;
   background: var(--red);
+	color: var(--black);
   justify-content: space-between;
   animation: show_toast 0.3s ease forwards;
 	text-transform: uppercase;
@@ -265,10 +287,6 @@ body {
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	/* border: 1px solid red; */
-	/* display: grid; */
-	/* justify-content: center; */
-	/* align-items: center; */
 }
 
 .about-content p {
@@ -363,22 +381,22 @@ body {
 	grid-template-columns: repeat(7, 1fr);
 	grid-template-columns: .4fr 1fr 1fr 1fr 1fr 1fr 1fr;
 	background-color: var(--frostblack);
-	/* background-color: #1f1f1f; */
+	opacity: .65;
 	font-size: 14px;
 	border: .2px solid var(--black);
 	padding: 0;
 }
 
 .profile-entry:nth-child(even) {
-	background-color: var(--frostblack);
+	/* background-color: var(--frostblack); */
 	/* background-color: #252525; */
 }
 
-.profile-entry:hover td {
-	/* opacity: .3; */
-	/* background-color: rgba(17,17,17,.8); */
-	background-color: rgba(172,172,188,.8);
-	color: var(--black);
+.profile-entry:hover {
+	/* background-color: rgba(172,172,188,.8); */
+	/* background-color: var(--darkgrey); */
+	/* color: var(--white); */
+	opacity: 1;
 }
 
 .table-column, .profile-entry-details {
@@ -387,8 +405,8 @@ body {
 }
 
 .profile-entry-details {
-	border-left: .1px solid var(--darkgrey);
-	border-right: .1px solid var(--darkgrey);
+	border-left: .1px solid var(--black);
+	border-right: .1px solid var(--black);
 	padding: .7em;
 	color: var(--white);
 }

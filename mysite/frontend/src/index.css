@@ -19,7 +19,8 @@
 }
 
 .navigation-buttons li {
-	background: var(--white);
+	background: var(--darkgrey);
+	opacity: 0.65;
 	margin-top: 1px;
 	margin-bottom: 1px;
 	display: grid;
@@ -29,7 +30,7 @@
 }
 
 a:-webkit-any-link {
-	color: var(--black);
+	color: var(--white);
 	text-decoration: none;
 }
 
@@ -42,5 +43,5 @@ a:-webkit-any-link {
 }
 
 .navigation-buttons li:hover {
-	opacity: 0.8;
+	opacity: 1;
 }

@@ -5,6 +5,7 @@ import React from 'react';
 export default function About() {
   return (
     <>
+      <div className="noise-bg"></div>
       <div className="about-content">
         <p>The database is composed of active fugitive records that have been that have been compiled through various public sources.</p>
         <div className="source-list">

@@ -18,6 +18,8 @@ export default function Database() {
 
   const createProfileTable = () => {
     return (
+      <>
+      <div className="noise-bg"></div>
       <div className="database-content">
         <div id="profile-entry-header">
           <button id="id" className="table-column profile-entry-header-buttons" onClick={toggleArrow}>ID<i className="caret"></i></button>
@@ -141,6 +143,7 @@ export default function Database() {
           </tbody>
         </table>
       </div>
+      </>
     )
   }
 

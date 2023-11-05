@@ -24,6 +24,7 @@ export default function Search() {
   const createSearchBar = () => {
     return (
       <>
+        <div className="noise-bg"></div>
         <div className="content">
           <div className="terminal-pointer"></div>
           {/* <span className="material-symbols-outlined">navigate_next</span> */}

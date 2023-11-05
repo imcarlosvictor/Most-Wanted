@@ -69,6 +69,7 @@ export default function ProfileDetails() {
   const createProfileDisplay = () => {
     return (
       <>
+        <div className="noise-bg"></div>
         <div className="profile-target-body">
           <div className="profile-target-content">
             <div className="profile-image">
