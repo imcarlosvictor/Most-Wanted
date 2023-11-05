@@ -433,7 +433,7 @@ body {
 	grid-template-rows: repeat(5, 1fr);
 }
 
-.profile-image, .intro-details, .physical-details, .target-details, .target-summary, .footer-details {
+.intro-details, .physical-details, .target-details, .target-summary, .footer-details {
 	background: var(--frostblack);
 	color: var(--white);
 	padding: .5em;
@@ -442,7 +442,13 @@ body {
 .profile-image {
 	grid-column: 1 ;
 	grid-row: 1 / span 3;
+	/* display: block; */
+}
+
+#profile-target-image {
+	object-fit: contain;
 	height: 100%;
+	width: 100%;
 }
 
 .target-details {

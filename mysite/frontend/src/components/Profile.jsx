@@ -73,7 +73,6 @@ export default function ProfileDetails() {
     }
   }
 
-  console.log(profileTargetData["name"])
   const createProfileDisplay = () => {
     return (
       <>
@@ -81,8 +80,11 @@ export default function ProfileDetails() {
         <div className="profile-target-body">
 
           <div className="profile-target-content">
+
             <div className="profile-image">
-              <p className="profile-data" id="image">{profileTargetData["image"]}</p>
+              <a href={profileTargetData["link"]} target="_blank" rel="noreferrer">
+                <img src={profileTargetData["images"]} alt="profile mugshot" id="profile-target-image"/>
+              </a>
             </div>
 
             <div className="target-details content-id">
