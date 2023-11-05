@@ -486,5 +486,61 @@ body {
 }
 
 #error-msg {
-	font-size: 200px;
+	font-size: 150px;
+  animation: glitch 1s linear infinite;
+}
+
+@keyframes glitch{
+  2%,64%{
+    transform: translate(2px,0) skew(4deg);
+  }
+  4%,60%{
+    transform: translate(-1px,0) skew(1deg);
+  }
+  62%{
+    transform: translate(0,0) skew(5deg);
+  }
+}
+
+.error-msg:before,
+.error-msg:after{
+  content: attr(title);
+  position: absolute;
+  left: 0;
+}
+
+.error-msg:before{
+  animation: glitchTop 1s linear infinite;
+  clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+  -webkit-clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+}
+
+@keyframes glitchTop{
+  2%,64%{
+    transform: translate(16px,-9px);
+  }
+  4%,60%{
+    transform: translate(-2px,7px);
+  }
+  62%{
+    transform: translate(20px,-1px) skew(-10deg);
+  }
+}
+
+.error-msg.after{
+  animation: glitchBotom 1.5s linear infinite;
+  clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+  -webkit-clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+}
+
+@keyframes glitchBotom{
+  2%,64%{
+    transform: translate(-9px,0);
+  }
+  4%,60%{
+    transform: translate(-9px,0);
+  }
+  62%{
+    transform: translate(-60px,5px) skew(18deg);
+  }
 }
