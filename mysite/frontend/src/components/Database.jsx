@@ -216,60 +216,42 @@ export default function Database() {
     // Fill rows with profile data
     for (let profileData of profileInfo) {
       let row = table.insertRow(-1);
-      row.className = "profile-entry-details";
-      let tableData = document.createElement("td")
+      row.className = "profile-entry";
+      row.addEventListener("click", () => {
+        window.location.replace(`/details/${profileData.id}`);
+      })
 
+      let tdID = document.createElement("td")
+      let tdName = document.createElement("td")
+      let tdAlias = document.createElement("td")
+      let tdSex = document.createElement("td")
+      let tdCharges = document.createElement("td")
+      let tdStatus = document.createElement("td")
+      let tdWantedBy = document.createElement("td")
 
-      let pathname = "/details/" + profileData.id
-      let link_parameters = `pathname:${pathname}, state:${profileData}`
-      tableData.innerHTML = `
-      <Link to={${link_parameters}}>
-      <td className="id">${profileData.id}</td>
-      <td className="name">${profileData.name}</td>
-      <td className="alias">${profileData.alias}</td>
-      <td className="sex">${profileData.sex}</td>
-      <td className="charges">${profileData.charges}</td>
-      <td className="status">${profileData.status}</td>
-      <td className="wanted_by">${profileData.wanted_by}</td>
-      </Link>
-      `
-      row.appendChild(tableData);
+      tdID.innerHTML = `<td>${profileData.id}</td>`
+      tdName.innerHTML = `<td>${profileData.name}</td>`
+      tdAlias.innerHTML = `<td>${profileData.alias}</td>`
+      tdSex.innerHTML = `<td>${profileData.sex}</td>`
+      tdCharges.innerHTML = `<t>${profileData.charges}</td>`
+      tdStatus.innerHTML = `<td><span class="status-value">${profileData.status}</span></td>`
+      tdWantedBy.innerHTML = `<td>${profileData.wanted_by}</td>`
 
-      // let table_row_btn = document.createElement("button");
-      // table_row_btn.className = "profile-entry-btn"
-      // table_row_btn.setAttribute("onclick", print);
+      tdID.className = "profile-entry-details id"
+      tdName.className = "profile-entry-details name"
+      tdAlias.className = "profile-entry-details alias"
+      tdSex.className = "profile-entry-details sex"
+      tdCharges.className = "profile-entry-details charges"
+      tdStatus.className = "profile-entry-details status"
+      tdWantedBy.className = "profile-entry-details wanted_by"
 
-      // let row = table.insertRow(-1);
-      // row.className = "profile-entry-details";
-      // row.addEventListener("event", print)
-
-      // let id = row.insertCell(0);
-      // id.innerHTML = profileData.id;
-      // id.className = "id";
-
-      // let name = row.insertCell(1);
-      // name.innerHTML = profileData.name;
-      // name.className = "name";
-
-      // let alias = row.insertCell(2);
-      // alias.innerHTML = profileData.alias;
-      // alias.className = "alias";
-
-      // let sex = row.insertCell(3);
-      // sex.innerHTML = profileData.sex;
-      // sex.className = "sex";
-
-      // let charges = row.insertCell(4);
-      // charges.innerHTML = profileData.charges;
-      // charges.className = "charges";
-
-      // let status = row.insertCell(5);
-      // status.innerHTML = profileData.status;
-      // status.className = "status";
-
-      // let wanted_by = row.insertCell(6);
-      // wanted_by.innerHTML = profileData.wanted_by;
-      // wanted_by.className = "wanted_by";
+      row.appendChild(tdID);
+      row.appendChild(tdName);
+      row.appendChild(tdAlias);
+      row.appendChild(tdSex);
+      row.appendChild(tdCharges);
+      row.appendChild(tdStatus);
+      row.appendChild(tdWantedBy);
 
     }
   }

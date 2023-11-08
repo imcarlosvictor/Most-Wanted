@@ -21,13 +21,12 @@ export default function Search() {
 
 
   const [value, setValue] = useState("");
-  const  navigate = useNavigate();
+  const navigate = useNavigate();
   const onChange = (event) => {
     setValue(event.target.value);
   };
   const onSearch = (searchTerm) => {
     setValue(searchTerm);
-    console.log("search:", searchTerm);
     navigate(`/details/${searchTerm}`)
   }
 
