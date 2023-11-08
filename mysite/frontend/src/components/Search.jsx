@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import profiles from '../api/profiles';
 
 
@@ -20,9 +21,15 @@ export default function Search() {
 
 
   const [value, setValue] = useState("");
+  const  navigate = useNavigate();
   const onChange = (event) => {
     setValue(event.target.value);
   };
+  const onSearch = (searchTerm) => {
+    setValue(searchTerm);
+    console.log("search:", searchTerm);
+    navigate(`/details/${searchTerm}`)
+  }
 
   const createSearchBar = () => {
     return (
@@ -35,11 +42,11 @@ export default function Search() {
               {profileInfo.filter(profile => {
                 const searchTerm = value.toUpperCase();
                 const name = profile.name.toUpperCase();
-                return (searchTerm && name.startsWith(searchTerm));
+                return (searchTerm.toUpperCase() && name.startsWith(searchTerm));
               }).slice(0, 10)
               .map(profile => {
                 return (
-                  <div className="search-content dropdown-row" onClick={console.log(profile.name.toUpperCase())}>{profile.name.toUpperCase()}</div>
+                  <div className="search-content dropdown-row" onClick={() => onSearch(profile.id)} key={profile.id}>{profile.name.toUpperCase()}</div>
                 )
               })}
             </div>
