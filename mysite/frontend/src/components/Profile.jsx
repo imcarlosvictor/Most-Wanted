@@ -123,6 +123,7 @@ export default function ProfileDetails() {
 
 
             <div className="intro-details">
+              <div className="divider intro-section"></div>
               <div className="detail-content">
                 <p className="label" id="name-label">name</p>
                 <p className="profile-data" id="name">{profileTargetData["name"]}</p>
@@ -151,20 +152,20 @@ export default function ProfileDetails() {
                 <p className="profile-data" id="sex">{profileTargetData["sex"]}</p>
               </div>
               <div className="detail-content">
-                <p className="label" id="marks-label">marks</p>
+                <p className="label" id="marks-label">distinguishing marks</p>
                 <p className="profile-data" id="distinguishing_marks">{profileTargetData["distinguishing_marks"]}</p>
               </div>
               <div className="detail-content">
-                <p className="label" id="height-label">height</p>
-                <p className="profile-data" id="height_in_cm">{profileTargetData["height_in_cm"]} cm</p>
-              </div>
-              <div className="detail-content">
-                <p className="label" id="weight-label">weight</p>
-                <p className="profile-data" id="weight_in_kg">{profileTargetData["weight_in_kg"]} kg</p>
+                <p className="label" id="height-label">height (cm)</p>
+                <p className="profile-data" id="height_in_cm">{profileTargetData["height_in_cm"]}</p>
               </div>
               <div className="detail-content">
                 <p className="label" id="eyes-label">eyes</p>
                 <p className="profile-data" id="eyes">{profileTargetData["eyes"]}</p>
+              </div>
+              <div className="detail-content">
+                <p className="label" id="weight-label">weight (kg)</p>
+                <p className="profile-data" id="weight_in_kg">{profileTargetData["weight_in_kg"]}</p>
               </div>
               <div className="detail-content">
                 <p className="label" id="hair-label">hair</p>

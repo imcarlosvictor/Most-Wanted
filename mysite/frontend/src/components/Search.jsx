@@ -1,12 +1,9 @@
-import React from 'react';
-import axios from 'axios';
 import { useState, useEffect } from 'react';
 import profiles from '../api/profiles';
 
 
 export default function Search() {
   const [profileInfo, setProfileInfo] = useState([]);
-
   const fetchProfiles = async () => {
     try {
       const response = await profiles.get('/profiles/')
@@ -21,14 +18,32 @@ export default function Search() {
     fetchProfiles();
   }, [])
 
+
+  const [value, setValue] = useState("");
+  const onChange = (event) => {
+    setValue(event.target.value);
+  };
+
   const createSearchBar = () => {
     return (
       <>
         <div className="noise-bg"></div>
         <div className="content">
-          <div className="terminal-pointer"></div>
-          {/* <span className="material-symbols-outlined">navigate_next</span> */}
-          <input type="text" className="form-field" id="search-bar" placeholder="Enter name"/>
+          <div className="search-bar-content">
+            <input type="text" value={value} className="search-content form-field" id="search-bar" placeholder="Enter name (e.g. John Doe)" onChange={onChange}/>
+            <div className="search-content dropdown">
+              {profileInfo.filter(profile => {
+                const searchTerm = value.toUpperCase();
+                const name = profile.name.toUpperCase();
+                return (searchTerm && name.startsWith(searchTerm));
+              }).slice(0, 10)
+              .map(profile => {
+                return (
+                  <div className="search-content dropdown-row" onClick={console.log(profile.name.toUpperCase())}>{profile.name.toUpperCase()}</div>
+                )
+              })}
+            </div>
+          </div>
         </div>
         <ul className="notifications"></ul>
       </>
@@ -36,6 +51,7 @@ export default function Search() {
     );
   }
 
+  // Notification feature
   useEffect( () => {
     var input = document.getElementById("search-bar");
     var notifications = document.querySelector(".notifications");
@@ -99,18 +115,19 @@ export default function Search() {
           console.log(`ID:${profileID}`);
         }
       }});
+
   });
 
   // Search for user input in the database of profiles
   function filterTable() {
     let search_bar = document.getElementById("search-bar");
-    let user_input = search_bar.value.toLowerCase();
+    let user_input = search_bar.value.toUpperCase();
     let flag = false;
     // Search for profile
     for (let i = 0; i < profileInfo.length; i++) {
-      if (profileInfo[i]["name"].trim() === user_input.trim()) {
+      if (profileInfo[i]["name"].trim().toUpperCase() === user_input.trim()) {
         flag = true;
-        return profileInfo[i]["id"];
+        return profileInfo[i]["id"].toUpperCase();
       }
     }
     // No result
