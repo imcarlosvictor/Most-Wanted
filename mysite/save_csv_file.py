@@ -15,44 +15,19 @@ django.setup()
 from UnifiedFugitiveDatabase.models import FugitiveProfiles
 
 
+def clean_table():
+    with open(RAW_DATA_EXTRACT_FILE_PATH, 'r') as file:
+        reader = csv.reader(file)
+        next(reader)
 
-def transform():
-    """
-    Remove duplicates from extracts.
-    """
-    df = pd.DataFrame(fugitive_profiles, columns=[
-        'name',
-        'alias',
-        'sex',
-        'height',
-        'weight',
-        'eyes',
-        'hair',
-        'distinguishing_marks',
-        'nationality',
-        'date_of_birth',
-        'place_of_birth',
-        'charges',
-        'wanted_by',
-        'status',
-        'publication',
-        'last_modified',
-        'reward',
-        'details',
-        'caution',
-        'remarks',
-        'images',
-        'link',
-    ])
-    print(df)
-
+        for row in reader:
+            if row[4] == '':
+                row[4] = 0
 
 def save_to_database():
     """
     Save transformed data to database.
     """
-
-
     with open(RAW_DATA_EXTRACT_FILE_PATH, 'r') as file:
         reader = csv.reader(file)
         next(reader) # Advance past header
@@ -88,5 +63,6 @@ def save_to_database():
             )
             profile.save()
 
+clean_table()
 save_to_database()
 print('csv saved to db')

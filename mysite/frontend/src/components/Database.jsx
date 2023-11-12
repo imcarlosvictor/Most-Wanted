@@ -126,6 +126,15 @@ export default function Database() {
                 }
               }
 
+              let status_classname = "";
+              if (profile.status === "wanted") {
+                status_classname += "wanted";
+              } else if (profile.status === "captured") {
+                status_classname += "captured";
+                console.log(profile.status);
+                console.log(status_classname);
+              }
+
               return (
                 <Link key={profile.id} to={"/details/" + profile.id} state={{ data:profileInfo }}>
                 <tr className="profile-entry">
@@ -134,7 +143,7 @@ export default function Database() {
                   <td className="profile-entry-details">{profile.alias}</td>
                   <td className={sex_classname}>{profile.sex}</td>
                   <td className={charges_classname}>{profile.charges}</td>
-                  <td className="profile-entry-details"><span className="status-value">{profile.status}</span></td>
+                  <td className="profile-entry-details"><span className={status_classname}>{profile.status}</span></td>
                   <td className={wanted_by_classname}>{profile.wanted_by}</td>
                 </tr>
                 </Link>
@@ -229,12 +238,19 @@ export default function Database() {
       let tdStatus = document.createElement("td")
       let tdWantedBy = document.createElement("td")
 
+      let status_value = "";
+      if (profileData.status === "wanted") {
+        status_value = "wanted";
+      } else if (profileData.status === "captured") {
+        status_value = "captured";
+      }
+
       tdID.innerHTML = `<td>${profileData.id}</td>`
       tdName.innerHTML = `<td>${profileData.name}</td>`
       tdAlias.innerHTML = `<td>${profileData.alias}</td>`
       tdSex.innerHTML = `<td>${profileData.sex}</td>`
       tdCharges.innerHTML = `<t>${profileData.charges}</td>`
-      tdStatus.innerHTML = `<td><span class="status-value">${profileData.status}</span></td>`
+      tdStatus.innerHTML = `<td><span class=${status_value}>${profileData.status}</span></td>`
       tdWantedBy.innerHTML = `<td>${profileData.wanted_by}</td>`
 
       tdID.className = "profile-entry-details id"

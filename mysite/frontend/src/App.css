@@ -9,6 +9,7 @@
 	--darkblue: #1a1b2b;
 	/* --red: #db001b; */
 	--red: #ff2b2b;
+	--green: #00fd9e;
 }
 
 * {
@@ -437,8 +438,12 @@ body {
 	color: var(--white);
 }
 
-.status-value {
+.wanted {
 	color: var(--red);
+}
+
+.captured {
+	color: var(--green);
 }
 
 /* ##################################################################### */

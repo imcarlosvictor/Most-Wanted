@@ -1,10 +1,14 @@
+import re
 import os
 import json
 import csv
+import time
 import httpx
 import requests
 import pandas as pd
 import country_converter as coco
+from lxml import html
+from bs4 import BeautifulSoup
 from selectolax.parser import HTMLParser
 from deep_translator import GoogleTranslator
 
@@ -127,12 +131,9 @@ class RcmpScraper:
                     profile_values_clean = profile_values_clean + ' ' + text.capitalize()
                 else:
                     profile_values_clean += text
-            profile_values[1] = profile_values_clean 
+            profile_values[1] = profile_values_clean
 
-            # Clean data
             self.clean_data(profile_values)
-
-            # Save profile
             self.save_to_csv(profile_values)
             current_profile_count += 1
 
@@ -168,11 +169,6 @@ class RcmpScraper:
 
 
 class FbiScraper:
-    def save_to_csv(self, profile_data):
-        with open(RAW_PROFILE_EXTRACT_CSV, 'a', newline='') as file:
-            writer = csv.writer(file, delimiter=',')
-            writer.writerow(profile_data)
-
     def extract_profile_data(self):
         """
         Implements api pagination.
@@ -180,61 +176,154 @@ class FbiScraper:
         print('------------------------------------')
         print('Extracting FBI Fugitives...')
         print('------------------------------------')
-        fugitive_profile_extracts = []
+        current_profile_count = 0
         page = 1
         while True:
-            response = requests.get('https://api.fbi.gov/wanted/v1/list', params={'page': page})
-            print(response)
-            fbi_data = response.json()
-            # fbi_data = json.loads(response.content)
-            fbi_data_pd = pd.DataFrame.from_dict(fbi_data)
+            try:
+                response = requests.get('https://api.fbi.gov/wanted/v1/list', params={'page': page})
+                fbi_data = response.json()
+                fbi_data_pd = pd.DataFrame.from_dict(fbi_data)
+            except ValueError as e:
+                print('#################################')
+                print('Decoding JSON has failed')
+                print('Restarting scraper in 5 minutes...')
+                time.sleep(300)
+                print('Restarting...')
+                continue
 
             # Base case
-            if len(fugitive_profile_extracts) == fbi_data['total']:
+            if current_profile_count == fbi_data['total']:
                 break
 
-            for i in range(0, len(fbi_data_pd['items'])):
-                age = ''
-                if fbi_data_pd['items'][i]['age_min']:
-                    age = str(fbi_data_pd['items'][i]['age_min']) + '-' + str(fbi_data_pd['items'][i]['age_max'])
-                else:
-                    age = str(fbi_data_pd['items'][i]['age_max'])
+            print(f"Extracting {current_profile_count} of {fbi_data['total']} FBI Profiles")
 
+            for i in range(0, len(fbi_data_pd['items'])):
+                time.sleep(.5)
                 height = ''
                 if fbi_data_pd['items'][i]['height_min']:
                     height = str(fbi_data_pd['items'][i]['height_min']) + '-' + str(fbi_data_pd['items'][i]['height_max'])
                 else:
                     height = str(fbi_data_pd['items'][i]['height_max'])
-                profile = {
-                    'name': fbi_data_pd['items'][i]['title'],
-                    'alias': fbi_data_pd['items'][i]['aliases'],
-                    'sex': fbi_data_pd['items'][i]['sex'],
-                    'height': '',
-                    'weight': fbi_data_pd['items'][i]['weight'],
-                    'eyes': fbi_data_pd['items'][i]['eyes'],
-                    'hair': fbi_data_pd['items'][i]['hair'],
-                    'distinguishing_marks': fbi_data_pd['items'][i]['scars_and_marks'],
-                    'nationality': fbi_data_pd['items'][i]['nationality'],
-                    'date_of_birth': fbi_data_pd['items'][i]['dates_of_birth_used'],
-                    'place_of_birth': fbi_data_pd['items'][i]['place_of_birth'],
-                    'charges': fbi_data_pd['items'][i]['subjects'],
-                    'wanted_by': 'FBI',
-                    'status': fbi_data_pd['items'][i]['status'],
-                    'publication': fbi_data_pd['items'][i]['publication'],
-                    'last_modified': fbi_data_pd['items'][i]['modified'],
-                    'reward': fbi_data_pd['items'][i]['reward_max'],
-                    'details': fbi_data_pd['items'][i]['details'],
-                    'caution': fbi_data_pd['items'][i]['caution'],
-                    'remarks': fbi_data_pd['items'][i]['warning_message'],
-                    'images': '',
-                    'link': fbi_data_pd['items'][i]['url'],
-                }
-                fugitive_profile_extracts.append(profile)
-                # print(profile)
+
+                name = fbi_data_pd['items'][i]['title']
+                alias = fbi_data_pd['items'][i]['aliases']
+                sex = fbi_data_pd['items'][i]['sex']
+                height = fbi_data_pd['items'][i]['height_max']
+                weight = fbi_data_pd['items'][i]['weight']
+                eyes = fbi_data_pd['items'][i]['eyes']
+                hair = fbi_data_pd['items'][i]['hair']
+                distinguishing_marks = fbi_data_pd['items'][i]['scars_and_marks']
+                nationality = fbi_data_pd['items'][i]['nationality']
+                date_of_birth = fbi_data_pd['items'][i]['dates_of_birth_used']
+                place_of_birth = fbi_data_pd['items'][i]['place_of_birth']
+                charges = fbi_data_pd['items'][i]['subjects']
+                wanted_by = 'FBI'
+                status = fbi_data_pd['items'][i]['status']
+                publication = fbi_data_pd['items'][i]['publication']
+                last_modified = fbi_data_pd['items'][i]['modified']
+                reward = fbi_data_pd['items'][i]['reward_max']
+                details = fbi_data_pd['items'][i]['details']
+                caution = fbi_data_pd['items'][i]['caution']
+                remarks = fbi_data_pd['items'][i]['warning_message']
+                image =  fbi_data_pd['items'][i]['images'][0]['original']
+                link = fbi_data_pd['items'][i]['url']
+
+                profile_values = [
+                    name,
+                    alias,
+                    sex,
+                    height,
+                    weight,
+                    eyes,
+                    hair,
+                    distinguishing_marks,
+                    nationality,
+                    date_of_birth,
+                    place_of_birth,
+                    charges,
+                    wanted_by,
+                    status,
+                    publication, last_modified,
+                    reward,
+                    details,
+                    caution,
+                    remarks,
+                    image,
+                    link,
+                ]
+
+                # Convert types to string
+                for i, val in enumerate(profile_values):
+                    profile_values[i] = str(val)
+                    if val == 'na' or val is None:
+                        profile_values[i] = ''
+
+                self.clean_data(profile_values)
+                self.save_to_csv(profile_values)
+
+                current_profile_count += 1
             page += 1
 
-        for profile in fugitive_profile_extracts:
-            self.raw_data_list.append(list(profile.values()))
+    def clean_data(self, profile_val):
+        # Change all values to lowercase to maintain consistency in database
+        for i, val in enumerate(profile_val):
+            if val.isalpha():
+                profile_val[i] = val.lower()
+
+        # -------------------- ALIAS --------------------
+        if profile_val[1]:
+            remove_brackets = profile_val[1].replace('[', '')
+            remove_brackets = remove_brackets.replace(']', '')
+            alias_value_clean = remove_brackets.replace("'", "")
+            profile_val[1] = alias_value_clean
+
+        # -------------------- HEIGHT --------------------
+        if profile_val[3] == '':
+            profile_val[3] = 0
+
+        # convert from inches to cm
+        if str(profile_val[3]) or profile_val[3] > 0 :
+            profile_val[3] = round(int(profile_val[3]) * 2.54)
+
+        # -------------------- WEIGHT --------------------
+        if str(profile_val[4]):
+            weight_val = profile_val[4].split()
+            for val in weight_val:
+                if val.isdigit():
+                    conversion_result = int(val) / 2.2046
+                    profile_val[4] = round(conversion_result)
+
+        if not (isinstance(profile_val[4], int)):
+            profile_val[4] = 0
+
+        # -------------------- DATE OF BIRTH --------------------
+        if profile_val[9]:
+            remove_brackets = profile_val[11].replace('[', '')
+            remove_brackets = remove_brackets.replace(']', '')
+            date_of_birth_value_clean = remove_brackets.replace("'", "")
+            profile_val[9] = date_of_birth_value_clean
+
+        # -------------------- CHARGES --------------------
+        if profile_val[11]:
+            remove_brackets = profile_val[11].replace('[', '')
+            remove_brackets = remove_brackets.replace(']', '')
+            charges_value_clean = remove_brackets.replace("'", "")
+            profile_val[11] = charges_value_clean
+
+        # -------------------- CHARGES --------------------
+        if profile_val[13] == '':
+            profile_val[13] = 'wanted'
+
+        # -------------------- DETAILS --------------------
+        # Remove HTML tags
+        if profile_val[17]:
+            p_tag_details = re.compile(r'<[^>]+>').sub('', profile_val[17])
+            profile_val[17] = p_tag_details
+
+    def save_to_csv(self, profile_data):
+        with open(RAW_PROFILE_EXTRACT_CSV, 'a', newline='') as file:
+            writer = csv.writer(file, delimiter=',')
+            writer.writerow(profile_data)
 
 
 class InterpolScraper:
@@ -328,17 +417,14 @@ class InterpolScraper:
                 link,
             ]
 
-            # Clean data
             self.clean_data(profile_values)
-
-            # Save profile
             self.save_to_csv(profile_values)
             current_profile_count += 1
 
     def clean_data(self, profile_val):
         # --------------- SEX ---------------
-        if profile_val[2] == 'M':            
-            profile_val[2] = 'Male' 
+        if profile_val[2] == 'M':
+            profile_val[2] = 'Male'
         elif profile_val[2] == 'F':
             profile_val[2] = 'Female'
 
@@ -366,7 +452,7 @@ class InterpolScraper:
         elif 'BRO' in profile_val[5]:
             profile_val[5] = 'brown'
         elif 'BROH' in profile_val[5]:
-            profile_val[5] = 'brown'
+            profile_val[5] = 'hazel brown'
         elif 'BROD' in profile_val[5]:
             profile_val[5] = 'brown'
         elif 'BLU' in profile_val[5]:
@@ -540,13 +626,13 @@ def main():
         dw = csv.DictWriter(file, delimiter=',', fieldnames=csv_header_list)
         dw.writeheader()
 
-    # create scrapers
     rcmp = RcmpScraper()
-    fbi = FbiScraper()
     interpol = InterpolScraper()
+    fbi = FbiScraper()
 
     rcmp.extract_profile_data()
     interpol.extract_profile_data()
+    fbi.extract_profile_data()
 
 
 if __name__ == '__main__':
