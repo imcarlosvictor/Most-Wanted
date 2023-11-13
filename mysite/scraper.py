@@ -7,8 +7,6 @@ import httpx
 import requests
 import pandas as pd
 import country_converter as coco
-from lxml import html
-from bs4 import BeautifulSoup
 from selectolax.parser import HTMLParser
 from deep_translator import GoogleTranslator
 
