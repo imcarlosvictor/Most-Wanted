@@ -43,6 +43,7 @@ pyasn1-modules==0.3.0
 pycparser==2.21
 PyDispatcher==2.0.7
 Pygments==2.16.1
+PyMySQL==1.1.0
 pyOpenSSL==23.2.0
 python-dateutil==2.8.2
 pytz==2023.3.post1
