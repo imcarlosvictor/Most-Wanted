@@ -99,9 +99,9 @@ DATABASES = {
         'PASSWORD': 'omega02;',
         'HOST': '127.0.0.1',
         'PORT': '3306',
-        # 'OPTIONS': {
-        #     'read_default_file': '/etc/mysql/my.cnf',
-        # }
+        'OPTIONS': {
+            'read_default_file': '/etc/mysql/my.cnf',
+        }
     }
 }
 
