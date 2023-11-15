@@ -97,7 +97,7 @@ DATABASES = {
         'NAME': 'FugitiveProfilesDatabase',
         'USER': 'django',
         'PASSWORD': 'omega02;',
-        'HOST': 'localhost',
+        'HOST': '127.0.0.1',
         'PORT': '3306',
         'OPTIONS': {
             'read_default_file': '/etc/mysql/my.cnf',
