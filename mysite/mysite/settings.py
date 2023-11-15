@@ -17,7 +17,7 @@ from pathlib import Path
 
 
 
-django_heroku.settings(locals())
+# django_heroku.settings(locals())
 # pymysql.version_info = (1, 4, 6, 'final', 0)
 # pymysql.install_as_MySQLdb()
 
@@ -33,7 +33,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-d1&d0**e3ir@c&l2u+uj66zlw3d*53(61(=tglap66p#gm9#39'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['.herokuapp.com']
 
