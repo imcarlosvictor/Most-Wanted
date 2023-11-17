@@ -17,7 +17,6 @@ from pathlib import Path
 
 
 
-# django_heroku.settings(locals())
 # pymysql.version_info = (1, 4, 6, 'final', 0)
 # pymysql.install_as_MySQLdb()
 
@@ -147,3 +146,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_WHITELIST = ['http://localhost:5173/']
+
+
+django_heroku.settings(locals())
