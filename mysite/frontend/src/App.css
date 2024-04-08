@@ -35,7 +35,7 @@ body {
 	width: 100%;
 	height: 100%;
 	padding: 0;
-	background: var(--black);
+	background: #aeb5c0;
 	color: var(--white);
 }
 
@@ -319,6 +319,7 @@ body {
 .about-content p {
 	text-transform: uppercase;
 	margin-bottom: 2em;
+	color: var(--black);
 }
 
 .sources li {
@@ -329,10 +330,11 @@ body {
 	text-decoration: none;
 	text-transform: uppercase;
 	color: var(--red);
+	font-weight: bold;
 }
 
 .sources li a:hover {
-	font-style: bold;
+	font-style: italic;
 	text-decoration: underline;
 }
 
